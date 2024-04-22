@@ -41,5 +41,6 @@ namespace ReadilyAPI.DataAccess
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<DeliveryType> DeliveryTypes { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Image> Images { get; set; }
     }
 }
