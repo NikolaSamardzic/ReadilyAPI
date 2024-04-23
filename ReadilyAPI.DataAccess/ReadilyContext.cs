@@ -44,5 +44,6 @@ namespace ReadilyAPI.DataAccess
         public DbSet<Image> Images { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Biography> Biographies { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace ReadilyAPI.DataAccess.Configurations
     {
         protected override void ConfigureEntity(EntityTypeBuilder<User> builder)
         {
-            #region Property
+            #region Properties
             builder.Property(x => x.FirstName)
                 .IsRequired()
                 .HasMaxLength(30);
@@ -43,7 +43,7 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .HasMaxLength(20);
             #endregion
 
-            #region Index
+            #region Indexes
             builder.HasIndex(x => x.Email)
                 .IsUnique();
 
@@ -53,7 +53,7 @@ namespace ReadilyAPI.DataAccess.Configurations
             builder.HasIndex(x => x.RoleId);
             #endregion
 
-            #region Relation
+            #region Relations
             builder.HasOne(x=> x.Avatar)
                 .WithMany()
                 .HasForeignKey(x=>x.AvatarId)
@@ -71,6 +71,11 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .HasForeignKey(x=>x.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Biography)
+                .WithOne()
+                .HasForeignKey<Biography>(x => x.UserId)
+                .IsRequired();
             #endregion
         }
     }

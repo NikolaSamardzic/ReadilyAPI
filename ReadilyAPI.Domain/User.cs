@@ -24,5 +24,6 @@ namespace ReadilyAPI.Domain
         public Address? Address { get; set; }
         public Role Role { get; set; }
         public Image Avatar { get; set; }
+        public Biography? Biography { get; set; }
     }
 }
