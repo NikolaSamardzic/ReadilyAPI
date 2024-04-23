@@ -25,5 +25,6 @@ namespace ReadilyAPI.Domain
         public Role Role { get; set; }
         public Image Avatar { get; set; }
         public Biography? Biography { get; set; }
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
     }
 }

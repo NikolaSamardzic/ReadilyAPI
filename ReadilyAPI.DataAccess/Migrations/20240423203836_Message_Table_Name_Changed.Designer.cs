@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadilyAPI.DataAccess;
 
@@ -11,9 +12,11 @@ using ReadilyAPI.DataAccess;
 namespace ReadilyAPI.DataAccess.Migrations
 {
     [DbContext(typeof(ReadilyContext))]
-    partial class ReadilyContextModelSnapshot : ModelSnapshot
+    [Migration("20240423203836_Message_Table_Name_Changed")]
+    partial class Message_Table_Name_Changed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
