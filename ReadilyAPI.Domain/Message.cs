@@ -14,7 +14,7 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public User User { get; set; } 
+        public virtual User User { get; set; } 
         #endregion
     }
 }

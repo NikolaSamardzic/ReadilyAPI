@@ -20,12 +20,12 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public User Author { get; set; }
-        public Publisher Publisher { get; set; }
-        public Image Image { get; set; }
-        public ICollection<Category> Categories { get; set; } = new List<Category>();
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Price> Prices { get; set; } = new List<Price>();
+        public virtual User Author { get; set; }
+        public virtual Publisher Publisher { get; set; }
+        public virtual Image Image { get; set; }
+        public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Price> Prices { get; set; } = new List<Price>();
         #endregion
     }
 }

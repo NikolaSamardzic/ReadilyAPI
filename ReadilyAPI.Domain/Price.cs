@@ -14,7 +14,7 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public Book Book { get; set; }
+        public virtual Book Book { get; set; }
         #endregion
     }
 }

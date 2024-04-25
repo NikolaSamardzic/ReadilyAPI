@@ -15,9 +15,9 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public User User { get; set; }
-        public Book Book { get; set; }
-        public ICollection<Image> Images { get; set; } = new List<Image>();
+        public virtual User User { get; set; }
+        public virtual Book Book { get; set; }
+        public virtual ICollection<Image> Images { get; set; } = new List<Image>();
         #endregion
     }
 }

@@ -24,16 +24,16 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public Address? Address { get; set; }
-        public Role Role { get; set; }
-        public Image Avatar { get; set; }
-        public Biography? Biography { get; set; }
-        public ICollection<Message> Messages { get; set; } = new List<Message>();
-        public ICollection<Book> Books { get; set; }
-        public ICollection<Category> Categories { get; set; } = new List<Category>();
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<Order> Orders { get; set; }
+        public virtual Address? Address { get; set; }
+        public virtual Role Role { get; set; }
+        public virtual Image Avatar { get; set; }
+        public virtual Biography? Biography { get; set; }
+        public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
+        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public virtual ICollection<Order> Orders { get; set; }
         #endregion
     }
 }

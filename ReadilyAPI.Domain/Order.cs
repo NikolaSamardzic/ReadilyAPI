@@ -18,11 +18,11 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public User User { get; set; }
-        public OrderStatus Status { get; set; }
-        public Address Address { get; set; }
-        public DeliveryType DeliveryType { get; set; }
-        public ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
+        public virtual User User { get; set; }
+        public virtual OrderStatus Status { get; set; }
+        public virtual Address Address { get; set; }
+        public virtual DeliveryType DeliveryType { get; set; }
+        public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
         #endregion
     }
 }

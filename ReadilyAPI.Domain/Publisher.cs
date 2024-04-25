@@ -9,7 +9,7 @@ namespace ReadilyAPI.Domain
     public class Publisher : NamedEntity
     {
         #region Navigation
-        public ICollection<Book> Books { get; set; } 
+        public virtual ICollection<Book> Books { get; set; } 
         #endregion
     }
 }

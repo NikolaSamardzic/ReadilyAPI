@@ -15,8 +15,8 @@ namespace ReadilyAPI.Domain
         #endregion
 
         #region Navigation
-        public Book Book { get; set; }
-        public Order Order { get; set; }
+        public virtual Book Book { get; set; }
+        public virtual Order Order { get; set; }
         #endregion
     }
 }
