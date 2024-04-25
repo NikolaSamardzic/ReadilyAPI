@@ -38,6 +38,8 @@ namespace ReadilyAPI.DataAccess
                 .WithMany(x=>x.Books)
                 .UsingEntity<BookCategory>();
 
+            modelBuilder.Entity<Review>().ToTable(x => x.HasCheckConstraint("CK_Stars","[Stars] > 0 AND [Stars] < 6"));
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -52,5 +54,13 @@ namespace ReadilyAPI.DataAccess
         public DbSet<Biography> Biographies { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Book> Books { get; set; }  
+        public DbSet<BookCategory> BookCategory { get; set; }
+        public DbSet<UserCategory> UserCategory { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentImage> CommentImage { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Price> Prices { get; set; }
+        public DbSet<BookOrder> BookOrder { get; set; }
+        public DbSet<Order> Orders { get; set; }
     }
 }

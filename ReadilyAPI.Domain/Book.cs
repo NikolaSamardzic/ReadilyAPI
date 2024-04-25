@@ -19,11 +19,13 @@ namespace ReadilyAPI.Domain
         public int ImageId { get; set; } 
         #endregion
 
-        #region Relations
+        #region Navigation
         public User Author { get; set; }
         public Publisher Publisher { get; set; }
         public Image Image { get; set; }
-        public ICollection<Category> Categories { get; set; } 
+        public ICollection<Category> Categories { get; set; } = new List<Category>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Price> Prices { get; set; } = new List<Price>();
         #endregion
     }
 }
