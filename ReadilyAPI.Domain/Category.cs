@@ -12,5 +12,10 @@ namespace ReadilyAPI.Domain
         public int? ParentId { get; set; }
         public ICollection<Category> Children { get; set; } = new HashSet<Category>();
         public Category Parent { get; set; }
+        public ICollection<Book> Books { get; set; }
+
+        // napraviti među tabelu
+        // kompozitni primarni ključ
+        // zabranjeno brisanje
     }
 }

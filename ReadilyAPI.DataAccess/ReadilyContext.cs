@@ -33,6 +33,11 @@ namespace ReadilyAPI.DataAccess
         {
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
+            modelBuilder.Entity<Book>()
+                .HasMany(x=>x.Categories)
+                .WithMany(x=>x.Books)
+                .UsingEntity<BookCategory>();
+
             base.OnModelCreating(modelBuilder);
         }
 
