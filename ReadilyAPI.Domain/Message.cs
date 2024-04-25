@@ -8,9 +8,13 @@ namespace ReadilyAPI.Domain
 {
     public class Message : Entity
     {
+        #region Properties
         public string Subject { get; set; }
         public string Text { get; set; }
+        #endregion
 
-        public User User { get; set; }
+        #region Navigation
+        public User User { get; set; } 
+        #endregion
     }
 }

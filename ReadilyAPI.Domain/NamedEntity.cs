@@ -8,6 +8,8 @@ namespace ReadilyAPI.Domain
 {
     public abstract class NamedEntity : Entity
     {
-        public string Name { get; set; }
+        #region Properties
+        public string Name { get; set; } 
+        #endregion
     }
 }

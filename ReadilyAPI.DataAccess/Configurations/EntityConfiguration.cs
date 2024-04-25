@@ -14,11 +14,13 @@ namespace ReadilyAPI.DataAccess.Configurations
     {
         public virtual void Configure(EntityTypeBuilder<T> builder)
         {
+            #region Properties
             builder.Property(x => x.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
 
             builder.Property(x => x.IsActive)
-                .HasDefaultValue(true);
+                .HasDefaultValue(true); 
+            #endregion
 
             ConfigureEntity(builder);
         }

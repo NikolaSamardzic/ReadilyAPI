@@ -13,7 +13,9 @@ namespace ReadilyAPI.DataAccess.Configurations
         protected override void ConfigureEntity(EntityTypeBuilder<Comment> builder)
         {
             #region Properties
-            builder.Property(x=>x.Text).IsRequired().HasMaxLength(500);
+            builder.Property(x=>x.Text)
+                .IsRequired()
+                .HasMaxLength(500);
             #endregion
 
             #region Relations

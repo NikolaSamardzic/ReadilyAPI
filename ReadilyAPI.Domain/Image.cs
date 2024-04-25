@@ -8,7 +8,9 @@ namespace ReadilyAPI.Domain
 {
     public class Image : Entity
     {
+        #region Properties
         public string Src { get; set; }
-        public string Alt { get; set; }
+        public string Alt { get; set; } 
+        #endregion
     }
 }

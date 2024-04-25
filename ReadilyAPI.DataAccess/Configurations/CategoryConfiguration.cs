@@ -12,12 +12,16 @@ namespace ReadilyAPI.DataAccess.Configurations
     {
         protected override void ConfigureEntity(EntityTypeBuilder<Category> builder)
         {
+            #region Properties
             builder.Property(x => x.Name)
-                  .HasMaxLength(50)
-                  .IsRequired();
+                .HasMaxLength(50)
+                .IsRequired();
+            #endregion
 
+            #region Indexes
             builder.HasIndex(x => x.Name)
-                   .IsUnique();
+                .IsUnique(); 
+            #endregion
         }
     }
 }

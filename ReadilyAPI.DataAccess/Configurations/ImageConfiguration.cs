@@ -12,12 +12,14 @@ namespace ReadilyAPI.DataAccess.Configurations
     {
         protected override void ConfigureEntity(EntityTypeBuilder<Image> builder)
         {
-            builder.Property(x=>x.Src)
+            #region Properties
+            builder.Property(x => x.Src)
                 .IsRequired();
 
             builder.Property(x => x.Alt)
                 .IsRequired()
-                .HasMaxLength(70);
+                .HasMaxLength(70); 
+            #endregion
         }
     }
 }

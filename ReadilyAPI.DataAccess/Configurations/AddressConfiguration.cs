@@ -12,7 +12,8 @@ namespace ReadilyAPI.DataAccess.Configurations
     {
         protected override void ConfigureEntity(EntityTypeBuilder<Address> builder)
         {
-            builder.Property(x=>x.Country)
+            #region Properties
+            builder.Property(x => x.Country)
                 .IsRequired()
                 .HasMaxLength(50);
 
@@ -35,10 +36,18 @@ namespace ReadilyAPI.DataAccess.Configurations
             builder.Property(x => x.AddressNumber)
                 .IsRequired()
                 .HasMaxLength(50);
+            #endregion
 
-            builder.HasIndex(x => new { x.Country, x.State, x.City, x.PostalCode, x.AddressName, x.AddressNumber});
-
-
+            #region Indexes
+            builder.HasIndex(x => new { 
+                x.Country, 
+                x.State, 
+                x.City, 
+                x.PostalCode, 
+                x.AddressName, 
+                x.AddressNumber 
+            });
+            #endregion
         }
     }
 }

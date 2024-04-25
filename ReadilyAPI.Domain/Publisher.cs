@@ -8,6 +8,8 @@ namespace ReadilyAPI.Domain
 {
     public class Publisher : NamedEntity
     {
-        public ICollection<Book> Books { get; set; }
+        #region Navigation
+        public ICollection<Book> Books { get; set; } 
+        #endregion
     }
 }

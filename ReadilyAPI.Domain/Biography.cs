@@ -8,7 +8,9 @@ namespace ReadilyAPI.Domain
 {
     public class Biography : Entity
     {
+        #region Properties
         public string Text;
-        public int UserId;
+        public int UserId; 
+        #endregion
     }
 }
