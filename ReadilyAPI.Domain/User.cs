@@ -29,11 +29,12 @@ namespace ReadilyAPI.Domain
         public virtual Image Avatar { get; set; }
         public virtual Biography? Biography { get; set; }
         public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
-        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<Book> Books { get; set; } = new List<Book>();
         public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<Book> Wishlists { get; set; } = new List<Book>();
         #endregion
     }
 }
