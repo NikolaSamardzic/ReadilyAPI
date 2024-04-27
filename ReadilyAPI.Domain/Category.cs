@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Domain
 {
-    public class Category : Entity
+    public class Category : NamedEntity
     {
         #region Properties
-        public string Name { get; set; }
         public int? ParentId { get; set; }
         #endregion
 

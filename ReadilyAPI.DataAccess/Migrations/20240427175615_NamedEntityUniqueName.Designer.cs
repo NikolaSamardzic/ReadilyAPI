@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadilyAPI.DataAccess;
 
@@ -11,9 +12,11 @@ using ReadilyAPI.DataAccess;
 namespace ReadilyAPI.DataAccess.Migrations
 {
     [DbContext(typeof(ReadilyContext))]
-    partial class ReadilyContextModelSnapshot : ModelSnapshot
+    [Migration("20240427175615_NamedEntityUniqueName")]
+    partial class NamedEntityUniqueName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,7 +128,10 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AuthotrId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -149,7 +155,7 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.Property<int>("PageCount")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
@@ -170,6 +176,8 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("AuthotrId");
 
                     b.HasIndex("ImageId")
                         .IsUnique();
@@ -254,7 +262,9 @@ namespace ReadilyAPI.DataAccess.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
@@ -263,6 +273,9 @@ namespace ReadilyAPI.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("ParentId");
 
@@ -323,40 +336,6 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasIndex("ImagesId");
 
                     b.ToTable("CommentImage");
-                });
-
-            modelBuilder.Entity("ReadilyAPI.Domain.DeliveryType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("DeliveryTypes");
                 });
 
             modelBuilder.Entity("ReadilyAPI.Domain.Image", b =>
@@ -435,6 +414,49 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("ReadilyAPI.Domain.NamedEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("NamedEntity");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("NamedEntity");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("ReadilyAPI.Domain.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -488,40 +510,6 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ReadilyAPI.Domain.OrderStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("OrderStatuses");
-                });
-
             modelBuilder.Entity("ReadilyAPI.Domain.Price", b =>
                 {
                     b.Property<int>("Id")
@@ -555,40 +543,6 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasIndex("BookId");
 
                     b.ToTable("Prices");
-                });
-
-            modelBuilder.Entity("ReadilyAPI.Domain.Publisher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Publishers");
                 });
 
             modelBuilder.Entity("ReadilyAPI.Domain.Review", b =>
@@ -625,47 +579,12 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("UserId", "BookId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reviews", t =>
                         {
                             t.HasCheckConstraint("CK_Stars", "[Stars] > 0 AND [Stars] < 6");
                         });
-                });
-
-            modelBuilder.Entity("ReadilyAPI.Domain.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("ReadilyAPI.Domain.User", b =>
@@ -788,6 +707,34 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.ToTable("Wishlist");
                 });
 
+            modelBuilder.Entity("ReadilyAPI.Domain.DeliveryType", b =>
+                {
+                    b.HasBaseType("ReadilyAPI.Domain.NamedEntity");
+
+                    b.HasDiscriminator().HasValue("DeliveryType");
+                });
+
+            modelBuilder.Entity("ReadilyAPI.Domain.OrderStatus", b =>
+                {
+                    b.HasBaseType("ReadilyAPI.Domain.NamedEntity");
+
+                    b.HasDiscriminator().HasValue("OrderStatus");
+                });
+
+            modelBuilder.Entity("ReadilyAPI.Domain.Publisher", b =>
+                {
+                    b.HasBaseType("ReadilyAPI.Domain.NamedEntity");
+
+                    b.HasDiscriminator().HasValue("Publisher");
+                });
+
+            modelBuilder.Entity("ReadilyAPI.Domain.Role", b =>
+                {
+                    b.HasBaseType("ReadilyAPI.Domain.NamedEntity");
+
+                    b.HasDiscriminator().HasValue("Role");
+                });
+
             modelBuilder.Entity("ReadilyAPI.Domain.Biography", b =>
                 {
                     b.HasOne("ReadilyAPI.Domain.User", null)
@@ -802,8 +749,7 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasOne("ReadilyAPI.Domain.User", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ReadilyAPI.Domain.Image", "Image")
                         .WithOne()
@@ -1044,11 +990,6 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.Navigation("BookOrders");
                 });
 
-            modelBuilder.Entity("ReadilyAPI.Domain.Publisher", b =>
-                {
-                    b.Navigation("Books");
-                });
-
             modelBuilder.Entity("ReadilyAPI.Domain.User", b =>
                 {
                     b.Navigation("Biography");
@@ -1062,6 +1003,11 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("ReadilyAPI.Domain.Publisher", b =>
+                {
+                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

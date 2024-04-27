@@ -20,10 +20,11 @@ namespace ReadilyAPI.DataAccess.Configurations
 
             builder.Property(x => x.PageCount).IsRequired();
 
-            builder.Property(x=>x.Price).HasPrecision(10, 2).IsRequired();
+            builder.Property(x=>x.Price).HasPrecision(10, 2).IsRequired(false);
 
             builder.Property(x=>x.ReleaseDate).IsRequired();
 
+            builder.Property(x=>x.AuthorId).IsRequired();
             #endregion
 
             #region Indexes
@@ -33,7 +34,7 @@ namespace ReadilyAPI.DataAccess.Configurations
 
             builder.HasIndex(x => x.Price);
 
-            builder.HasIndex(x => x.AuthotrId);
+            builder.HasIndex(x => x.AuthorId);
             #endregion
 
             #region Relations

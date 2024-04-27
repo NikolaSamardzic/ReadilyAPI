@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadilyAPI.DataAccess;
 
@@ -11,9 +12,11 @@ using ReadilyAPI.DataAccess;
 namespace ReadilyAPI.DataAccess.Migrations
 {
     [DbContext(typeof(ReadilyContext))]
-    partial class ReadilyContextModelSnapshot : ModelSnapshot
+    [Migration("20240427180734_RemoveNamedEntity")]
+    partial class RemoveNamedEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,7 +128,10 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AuthotrId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -149,7 +155,7 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.Property<int>("PageCount")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
@@ -170,6 +176,8 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("AuthotrId");
 
                     b.HasIndex("ImageId")
                         .IsUnique();
@@ -254,7 +262,9 @@ namespace ReadilyAPI.DataAccess.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
@@ -263,6 +273,9 @@ namespace ReadilyAPI.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("ParentId");
 
@@ -625,8 +638,7 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("UserId", "BookId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reviews", t =>
                         {
@@ -802,8 +814,7 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasOne("ReadilyAPI.Domain.User", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ReadilyAPI.Domain.Image", "Image")
                         .WithOne()

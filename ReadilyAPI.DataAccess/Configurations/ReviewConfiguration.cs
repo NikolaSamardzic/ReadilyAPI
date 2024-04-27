@@ -17,6 +17,11 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .IsRequired();
             #endregion
 
+            #region Indexes
+            builder.HasIndex(x => new { x.UserId, x.BookId })
+                .IsUnique();
+            #endregion
+
             #region Relations
             builder.HasOne<User>()
                 .WithMany(x=>x.Reviews)

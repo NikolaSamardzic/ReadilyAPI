@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,23 @@ namespace ReadilyAPI.DataAccess.Configurations
             #region Relations
             builder.HasOne(x => x.User)
                 .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.UserId);
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(x => x.BookOrders)
                 .WithOne(x => x.Order)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Status)
+                .WithMany()
+                .HasForeignKey(x => x.StatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.DeliveryType)
+                .WithMany()
+                .HasForeignKey(x => x.DeliveryTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
             #endregion
         }
     }

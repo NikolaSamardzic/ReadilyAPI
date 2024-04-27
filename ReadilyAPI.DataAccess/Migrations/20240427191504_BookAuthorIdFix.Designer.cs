@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadilyAPI.DataAccess;
 
@@ -11,9 +12,11 @@ using ReadilyAPI.DataAccess;
 namespace ReadilyAPI.DataAccess.Migrations
 {
     [DbContext(typeof(ReadilyContext))]
-    partial class ReadilyContextModelSnapshot : ModelSnapshot
+    [Migration("20240427191504_BookAuthorIdFix")]
+    partial class BookAuthorIdFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,7 +152,7 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.Property<int>("PageCount")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
@@ -625,8 +628,7 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("UserId", "BookId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reviews", t =>
                         {
