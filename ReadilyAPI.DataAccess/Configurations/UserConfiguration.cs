@@ -41,6 +41,9 @@ namespace ReadilyAPI.DataAccess.Configurations
             builder.Property(x => x.Phone)
                 .IsRequired()
                 .HasMaxLength(20);
+
+            builder.Property(x => x.IsBanned)
+                .HasDefaultValue(false);
             #endregion
 
             #region Indexes
