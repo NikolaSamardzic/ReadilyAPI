@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,25 @@ namespace ReadilyAPI.DataAccess
                 .ToTable(x => x.HasCheckConstraint("CK_Stars","[Stars] > 0 AND [Stars] < 6"));
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public override int SaveChanges()
+        {
+            IEnumerable<EntityEntry> entries = this.ChangeTracker.Entries();
+
+            foreach (EntityEntry entry in entries)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    if (entry.Entity is Entity e)
+                    {
+                        e.IsActive = true;
+                        e.CreatedAt = DateTime.UtcNow;
+                    }
+                }
+            }
+
+            return base.SaveChanges();
         }
 
         public DbSet<Category> Categories { get; set; }
