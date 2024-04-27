@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.DataAccess.Configurations
 {
-    internal class CategoryConfiguration : EntityConfiguration<Category>
+    internal class CategoryConfiguration : NamedEntityConfiguration<Category>
     {
         protected override void ConfigureEntity(EntityTypeBuilder<Category> builder)
         {
