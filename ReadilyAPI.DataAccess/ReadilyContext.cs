@@ -80,14 +80,14 @@ namespace ReadilyAPI.DataAccess
         public DbSet<Biography> Biographies { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Book> Books { get; set; }  
-        public DbSet<BookCategory> BookCategory { get; set; }
-        public DbSet<UserCategory> UserCategory { get; set; }
+        public DbSet<BookCategory> BooksCategories { get; set; }
+        public DbSet<UserCategory> UsersCategories { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<CommentImage> CommentImage { get; set; }
+        public DbSet<CommentImage> CommentsImages { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Price> Prices { get; set; }
-        public DbSet<BookOrder> BookOrder { get; set; }
+        public DbSet<BookOrder> BooksOrders { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Wishlist> Wishlist { get; set; }
+        public DbSet<Wishlist> Wishlists { get; set; }
     }
 }
