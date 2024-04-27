@@ -16,6 +16,8 @@ namespace ReadilyAPI.DataAccess.Configurations
             builder.Property(x => x.FinishedAt)
                 .IsRequired(false);
 
+            builder.Property(x=>x.AddressId).IsRequired(false);
+
             builder.Property(x=>x.TotalPrice).HasPrecision(10,2);
             #endregion
 
