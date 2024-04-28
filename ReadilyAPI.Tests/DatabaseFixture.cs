@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Tests.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Tests
 {
-    internal class DatabaseFixture : IDisposable
+    public class DatabaseFixture : IDisposable
     {
         private ReadilyContext _context;
 
@@ -22,7 +23,7 @@ namespace ReadilyAPI.Tests
             _context = new ReadilyContext("Data Source=NIKOLA\\SQLEXPRESS;Initial Catalog=Readily_Test;TrustServerCertificate=true;Integrated security = true");
 
             CleanDB();
-            InitDB();
+            InitDB(_context);
         }
 
         public void Dispose()
@@ -34,12 +35,14 @@ namespace ReadilyAPI.Tests
         {
             using SqlConnection connection = new SqlConnection("Data Source=NIKOLA\\SQLEXPRESS;Initial Catalog=Readily_Test;TrustServerCertificate=true;Integrated security = true");
 
-            connection.Execute("Data Source=NIKOLA\\SQLEXPRESS;Initial Catalog=Readily_Test;TrustServerCertificate=true;Integrated security = true", commandType: CommandType.StoredProcedure);
+            connection.Execute("CleanDatabase", commandType: CommandType.StoredProcedure);
         }
 
-        private void InitDB()
+        private void InitDB(ReadilyContext _context)
         {
+            RoleInit.Execute(_context);
 
+            _context.SaveChanges();
         }
     }
 }
