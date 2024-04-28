@@ -5,9 +5,12 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadilyAPI.Domain", "ReadilyAPI.Domain\ReadilyAPI.Domain.csproj", "{572EDEC7-054D-4EA0-BB94-952CD5B4E236}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadilyAPI.DataAccess", "ReadilyAPI.DataAccess\ReadilyAPI.DataAccess.csproj", "{A87D4C59-9866-42B9-A7D2-CEF5EAE99BA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadilyAPI.DataAccess", "ReadilyAPI.DataAccess\ReadilyAPI.DataAccess.csproj", "{A87D4C59-9866-42B9-A7D2-CEF5EAE99BA2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{572EDEC7-054D-4EA0-BB94-952CD5B4E236} = {572EDEC7-054D-4EA0-BB94-952CD5B4E236}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadilyAPI.Tests", "ReadilyAPI.Tests\ReadilyAPI.Tests.csproj", "{BABA5FA8-BE22-4882-8CCC-357A5CDBD54C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadilyAPI.Tests", "ReadilyAPI.Tests\ReadilyAPI.Tests.csproj", "{BABA5FA8-BE22-4882-8CCC-357A5CDBD54C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
