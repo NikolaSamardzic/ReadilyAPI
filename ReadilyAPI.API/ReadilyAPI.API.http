@@ -1,0 +1,6 @@
+@ReadilyAPI.API_HostAddress = http://localhost:5078
+
+GET {{ReadilyAPI.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

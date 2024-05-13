@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadilyAPI.DataAccess", "Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadilyAPI.Tests", "ReadilyAPI.Tests\ReadilyAPI.Tests.csproj", "{BABA5FA8-BE22-4882-8CCC-357A5CDBD54C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadilyAPI.API", "ReadilyAPI.API\ReadilyAPI.API.csproj", "{227B4631-76E9-46C3-A1F2-A6F724D5A602}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{BABA5FA8-BE22-4882-8CCC-357A5CDBD54C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BABA5FA8-BE22-4882-8CCC-357A5CDBD54C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BABA5FA8-BE22-4882-8CCC-357A5CDBD54C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227B4631-76E9-46C3-A1F2-A6F724D5A602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227B4631-76E9-46C3-A1F2-A6F724D5A602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227B4631-76E9-46C3-A1F2-A6F724D5A602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227B4631-76E9-46C3-A1F2-A6F724D5A602}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
