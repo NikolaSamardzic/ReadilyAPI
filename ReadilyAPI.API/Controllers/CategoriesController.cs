@@ -73,8 +73,40 @@ namespace ReadilyAPI.API.Controllers
 
         // DELETE api/<CategoriesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try
+            {
+                Category category = _context.Categories.Find(id);
+
+                if (category == null)
+                {
+                    return NotFound();
+                }
+
+                if (category.Books.Any())
+                {
+                    return Conflict(new { errror = "Category contains books." });
+                }
+
+                if (_context.UsersCategories.Any(x => x.CategoryId == id))
+                {
+                    return Conflict(new { error = "Some users are interested in this category." });
+                }
+
+                if (category.Children.Any())
+                {
+                    return Conflict(new { error = "Category contains child categories." });
+                }
+
+                _context.Categories.Remove(category);
+                _context.SaveChanges();
+
+                return NoContent();
+            }
+            catch(Exception ex) {
+                return BadRequest(ex);
+            }
         }
     }
 }
