@@ -1,11 +1,16 @@
 ﻿//using FluentValidation.Results;
 //using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using ReadilyAPI.API.DTO.Category;
-using ReadilyAPI.API.Extensions;
-using ReadilyAPI.API.Validation;
+using ReadilyAPI.Application.UseCaseHandling.Command;
+using ReadilyAPI.Application.UseCaseHandling.Query;
+using ReadilyAPI.Application.UseCases.Commands.Categories;
+using ReadilyAPI.Application.UseCases.DTO.Category;
+using ReadilyAPI.Application.UseCases.Queries;
+using ReadilyAPI.Application.UseCases.Queries.Searches;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Domain;
+using ReadilyAPI.Implementation.UseCases.Commands;
+using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using System.ComponentModel.DataAnnotations;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
@@ -17,96 +22,56 @@ namespace ReadilyAPI.API.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private ReadilyContext _context;
-        public CategoriesController(ReadilyContext context) {
-            this._context = context;
+        private readonly ICommandHandler _commandHandler;
+        private readonly IQueryHandler _queryHandler;
+
+        public CategoriesController(ICommandHandler commandHandler, IQueryHandler queryHandler)
+        {
+            _commandHandler = commandHandler;
+            _queryHandler = queryHandler;
         }
 
         // GET: api/<CategoriesController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public IActionResult Get([FromQuery] CategorySearch search, [FromServices] IGetCategoriesQuery query) => Ok(_queryHandler.HandleQuery(query, search));
 
         // GET api/<CategoriesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        public IActionResult Get(int id,[FromServices] IFindCategoryQuery query) 
+            => Ok(_queryHandler.HandleQuery(query, id));
 
         // POST api/<CategoriesController>
         [HttpPost]
-        public IActionResult Post([FromServices] CreateCategoryDtoValidator validator,[FromBody] CreateCatregoryDto dto)
+        public IActionResult Post([FromBody] CreateCategoryDto dto, [FromServices] ICreateCategoryCommand command)
         {
-            try
-            {
-                ValidationResult result = validator.Validate(dto);
-
-                if(!result.IsValid)
-                {
-                    return result.ToUnprocessableEntity();
-                }
-
-                Category category = new Category{
-                    Name = dto.Name,
-                    ParentId = dto.ParentId,
-                };
-
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-
-                return StatusCode(201);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            _commandHandler.HandleCommand(command,dto);
+            return StatusCode(201);
         }
 
         // PUT api/<CategoriesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdateCategoryDto dto, IUpdateCategoryCommand command)
         {
+            dto.Id = id;
+            _commandHandler.HandleCommand(command, dto);
+
+            return StatusCode(204);
         }
 
-        // DELETE api/<CategoriesController>/5
+        //DELETE api/<CategoriesController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id, [FromServices] IDeleteCategoryCommand command)
         {
-            try
-            {
-                Category category = _context.Categories.Find(id);
+            _commandHandler.HandleCommand(command, id);
+            return StatusCode(204);
+        }
 
-                if (category == null)
-                {
-                    return NotFound();
-                }
-
-                if (category.Books.Any())
-                {
-                    return Conflict(new { errror = "Category contains books." });
-                }
-
-                if (_context.UsersCategories.Any(x => x.CategoryId == id))
-                {
-                    return Conflict(new { error = "Some users are interested in this category." });
-                }
-
-                if (category.Children.Any())
-                {
-                    return Conflict(new { error = "Category contains child categories." });
-                }
-
-                _context.Categories.Remove(category);
-                _context.SaveChanges();
-
-                return NoContent();
-            }
-            catch(Exception ex) {
-                return BadRequest(ex);
-            }
+        //PATCH api/<CategoriesController>/5/activate
+        [HttpPatch("{id}/activate")]
+        public IActionResult Activate(int id, [FromServices] IActivateCategoryCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+            return StatusCode(204);
         }
     }
 }

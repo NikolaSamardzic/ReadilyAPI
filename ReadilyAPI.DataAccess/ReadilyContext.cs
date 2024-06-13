@@ -40,12 +40,18 @@ namespace ReadilyAPI.DataAccess
                 .UsingEntity<BookCategory>();
 
             modelBuilder.Entity<Book>()
-                .HasMany(x => x.Wishlists)
-                .WithMany(x => x.Wishlists)
+                .HasMany(x => x.Wishlist)
+                .WithMany(x => x.Wishlist)
                 .UsingEntity<Wishlist>();
 
             modelBuilder.Entity<Review>()
                 .ToTable(x => x.HasCheckConstraint("CK_Stars","[Stars] > 0 AND [Stars] < 6"));
+
+            modelBuilder.Entity<RoleUseCase>()
+                .HasKey(x => new { x.RoleId, x.UseCaseId });
+
+            modelBuilder.Entity<UserUseCase>()
+                .HasKey(x => new { x.UserId, x.UseCaseId });
 
             base.OnModelCreating(modelBuilder);
         }
@@ -56,13 +62,12 @@ namespace ReadilyAPI.DataAccess
 
             foreach (EntityEntry entry in entries)
             {
-                if (entry.State == EntityState.Added)
+                if (entry.State == EntityState.Added && entry.Entity is Entity addedEntity)
                 {
-                    if (entry.Entity is Entity e)
-                    {
-                        e.IsActive = true;
-                        e.CreatedAt = DateTime.UtcNow;
-                    }
+                    addedEntity.IsActive = true;
+                    addedEntity.CreatedAt = DateTime.UtcNow;
+                }else if (entry.State == EntityState.Modified && entry.Entity is Entity updatedEntity) {
+                    updatedEntity.UpdatedAt = DateTime.UtcNow;
                 }
             }
 
@@ -89,5 +94,9 @@ namespace ReadilyAPI.DataAccess
         public DbSet<BookOrder> BooksOrders { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
+        public DbSet<ErrorLog> ErrorLogs { get; set; }
+        public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<RoleUseCase> RoleUseCases { get; set; }
+        public DbSet<UserUseCase> UserUseCases { get; set; }
     }
 }

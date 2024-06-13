@@ -80,9 +80,12 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .HasForeignKey<Biography>(x => x.UserId)
                 .IsRequired();
 
-            builder.HasMany(x=>x.Categories)
-                .WithMany()
+            builder.HasMany(x => x.Categories)
+                .WithMany(x => x.UserCategories)
                 .UsingEntity<UserCategory>();
+
+            builder.HasMany(x => x.UserUseCases)
+                .WithOne(x => x.User);
             #endregion
         }
     }

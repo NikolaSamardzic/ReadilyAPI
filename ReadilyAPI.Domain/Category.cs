@@ -15,7 +15,8 @@ namespace ReadilyAPI.Domain
         #region Navigation
         public virtual ICollection<Category> Children { get; set; } = new HashSet<Category>();
         public virtual Category Parent { get; set; }
-        public virtual ICollection<Book> Books { get; set; } = new List<Book>(); 
+        public virtual ICollection<Book> Books { get; set; } = new List<Book>();
+        public virtual ICollection<User> UserCategories { get; set; } = new List<User>();
         #endregion
     }
 }

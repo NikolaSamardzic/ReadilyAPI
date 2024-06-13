@@ -8,5 +8,6 @@ namespace ReadilyAPI.Domain
 {
     public class Role : NamedEntity
     {
+        public virtual ICollection<RoleUseCase> RoleUseCases { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace ReadilyAPI.DataAccess.Configurations
     {
         protected override void ConfigureEntity(EntityTypeBuilder<Role> builder)
         {
-
+            builder.HasMany(x=>x.RoleUseCases).WithOne(x=>x.Role);
         }
     }
 }
