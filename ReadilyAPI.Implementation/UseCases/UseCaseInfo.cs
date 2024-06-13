@@ -8,6 +8,6 @@ namespace ReadilyAPI.Implementation.UseCases
 {
     public static class UseCaseInfo
     {
-        public static int MaxUseCaseId => 7;
+        public static int MaxUseCaseId => 8;
     }
 }
