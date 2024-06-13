@@ -70,7 +70,7 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(x=>x.Role)
-                .WithMany()
+                .WithMany(x=>x.Users)
                 .HasForeignKey(x=>x.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
