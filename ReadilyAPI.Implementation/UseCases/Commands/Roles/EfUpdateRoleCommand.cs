@@ -34,7 +34,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 
             var role = Context.Roles
                 .Include(x=>x.RoleUseCases)
-                .FirstOrDefault(x=>x.Id == data.Id);
+                .FirstOrDefault(x=>x.Id == data.Id && x.IsActive);
 
             if (role == null)
             {
