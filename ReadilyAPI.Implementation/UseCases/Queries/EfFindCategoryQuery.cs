@@ -27,7 +27,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             var category = Context.Categories
                                     .Include(x=>x.Parent)
                                     .Include(x=>x.Children)
-                                    .FirstOrDefault(x=>x.Id == id);
+                                    .FirstOrDefault(x=>x.Id == id && x.IsActive);
 
             if(category == null)
             {
