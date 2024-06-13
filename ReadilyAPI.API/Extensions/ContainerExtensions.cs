@@ -11,12 +11,15 @@ using ReadilyAPI.Application.Logging;
 using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
+using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
+using ReadilyAPI.Implementation.UseCases.Commands.Roles;
 using ReadilyAPI.Implementation.UseCases.Queries;
 using ReadilyAPI.Implementation.Validators.Category;
+using ReadilyAPI.Implementation.Validators.Role;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -54,6 +57,7 @@ namespace ReadilyAPI.API.Extensions
         {
             services.AddTransient<CreateCategoryValidator>();
             services.AddTransient<UpdateCategoryValidator>();
+            services.AddTransient<CreateRoleValidator>();
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -165,6 +169,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteCategoryCommand, EfDeleteCategoryCommand>();
             services.AddTransient<IUpdateCategoryCommand, EfUpdateCategoryCommand>();
             services.AddTransient<IActivateCategoryCommand, EfActivateCategoryCommand>();
+            services.AddTransient<ICreateRoleCommand, EfCreateRoleCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
