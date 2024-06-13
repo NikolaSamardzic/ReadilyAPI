@@ -4,6 +4,7 @@ using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.DTO.Roles;
 using ReadilyAPI.Application.UseCases.Queries;
+using ReadilyAPI.Application.UseCases.Queries.Searches;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,10 +25,7 @@ namespace ReadilyAPI.API.Controllers
 
         // GET: api/<RolesController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public IActionResult Get([FromQuery] RoleSearch search, IGetRolesQuery query) => Ok(_queryHandler.HandleQuery(query, search));
 
         // GET api/<RolesController>/5
         [HttpGet("{id}")]

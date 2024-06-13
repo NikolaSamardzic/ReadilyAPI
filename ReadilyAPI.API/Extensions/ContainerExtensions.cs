@@ -173,13 +173,14 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateRoleCommand, EfCreateRoleCommand>();
             services.AddTransient<IUpdateRoleCommand, EfUpdateRoleCommand>();
             services.AddTransient<IDeleteRoleCommand, EfDeleteRoleCommand>();
-            services.AddTransient<IFindRoleQuery, EfFindRoleQuery>();
         }
 
         public static void AddQueries(this IServiceCollection services)
         {
             services.AddTransient<IFindCategoryQuery, EfFindCategoryQuery>();
             services.AddTransient<IGetCategoriesQuery, EfGetCategoriesQuery>();
+            services.AddTransient<IFindRoleQuery, EfFindRoleQuery>();
+            services.AddTransient<IGetRolesQuery, EfGetRolesQuery>();
         }
     }
 }
