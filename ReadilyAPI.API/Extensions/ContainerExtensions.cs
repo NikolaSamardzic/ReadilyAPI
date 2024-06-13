@@ -58,6 +58,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateCategoryValidator>();
             services.AddTransient<UpdateCategoryValidator>();
             services.AddTransient<CreateRoleValidator>();
+            services.AddTransient<UpdateRoleValidator>();
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -170,6 +171,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUpdateCategoryCommand, EfUpdateCategoryCommand>();
             services.AddTransient<IActivateCategoryCommand, EfActivateCategoryCommand>();
             services.AddTransient<ICreateRoleCommand, EfCreateRoleCommand>();
+            services.AddTransient<IUpdateRoleCommand, EfUpdateRoleCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

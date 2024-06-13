@@ -45,8 +45,12 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<RolesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdateRoleDto dto, IUpdateRoleCommand command)
         {
+            dto.Id = id;
+            _commandHandler.HandleCommand(command, dto);
+
+            return StatusCode(204);
         }
 
         // DELETE api/<RolesController>/5

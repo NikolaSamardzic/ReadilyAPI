@@ -30,7 +30,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
         public void Execute(UpdateCategoryDto data)
         {
-            var category = Context.Categories.Include(x=>x.Parent).Include(x=>x.Children).FirstOrDefault(x=> x.Id == data.Id);
+            var category = Context.Categories.Include(x=>x.Parent).Include(x=>x.Children).FirstOrDefault(x=> x.Id == data.Id && x.IsActive);
 
             if (category == null)
             {
