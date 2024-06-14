@@ -190,6 +190,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetCategoriesQuery, EfGetCategoriesQuery>();
             services.AddTransient<IFindRoleQuery, EfFindRoleQuery>();
             services.AddTransient<IGetRolesQuery, EfGetRolesQuery>();
+            services.AddTransient<IFindPublisherQuery, EfFindPublisherQuery>();
         }
     }
 }
