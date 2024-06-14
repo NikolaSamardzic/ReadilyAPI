@@ -8,5 +8,6 @@ namespace ReadilyAPI.Domain
 {
     public class DeliveryType : NamedEntity
     {
+        public virtual IEnumerable<Order> Orders { get; set; } = new List<Order>();
     }
 }
