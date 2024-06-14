@@ -11,19 +11,21 @@ using ReadilyAPI.Application.Logging;
 using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
+using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
-using ReadilyAPI.Implementation.UseCases.Commands;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
+using ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses;
 using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
 using ReadilyAPI.Implementation.UseCases.Queries;
 using ReadilyAPI.Implementation.Validators.Category;
+using ReadilyAPI.Implementation.Validators.DeliveryType;
 using ReadilyAPI.Implementation.Validators.OrderStatus;
 using ReadilyAPI.Implementation.Validators.Publisher;
 using ReadilyAPI.Implementation.Validators.Role;
@@ -70,6 +72,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<UpdatePublisherValidator>();
             services.AddTransient<CreateOrderStatusValidator>();
             services.AddTransient<UpdateOrderStatusValidatior>();
+            services.AddTransient<CreateDeliveryTypeValidator>();
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -192,6 +195,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateOrderStatusCommand,EfCreateOrderStatusesCommand>();
             services.AddTransient<IUpdateOrderStatusCommand, EfUpdateOrderStatusesCommand>();
             services.AddTransient<IDeleteOrderStatusCommand, EfDeleteOrderStatusCommand>();
+            services.AddTransient<ICreateDeliveryTypeCommand, EfCreateDeliveryTypesCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

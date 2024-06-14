@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadilyAPI.Implementation.UseCases.Commands
+namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 {
     public class EfActivatePublisherCommand : EfUseCase, IActivatePublisherCommand
     {
@@ -26,7 +26,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands
 
             if (publsiher == null)
             {
-                throw new EntityNotFoundException(data, nameof(Domain.Publisher));
+                throw new EntityNotFoundException(data, nameof(Publisher));
             }
 
             publsiher.IsActive = true;
