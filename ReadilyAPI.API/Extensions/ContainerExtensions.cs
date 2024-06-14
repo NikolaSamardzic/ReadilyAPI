@@ -69,6 +69,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreatePublisherValidator>();
             services.AddTransient<UpdatePublisherValidator>();
             services.AddTransient<CreateOrderStatusValidator>();
+            services.AddTransient<UpdateOrderStatusValidatior>();
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -189,6 +190,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeletePublisherCommand, EfDeletePublisherCommand>();
             services.AddTransient<IActivatePublisherCommand, EfActivatePublisherCommand>();
             services.AddTransient<ICreateOrderStatusCommand,EfCreateOrderStatusesCommand>();
+            services.AddTransient<IUpdateOrderStatusCommand, EfUpdateOrderStatusesCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
