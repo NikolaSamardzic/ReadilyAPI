@@ -23,7 +23,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 
         public void Execute(int data)
         {
-            var publisher = Context.Publishers.Include(x=>x.Books).FirstOrDefault(x=>x.Id == data);
+            var publisher = Context.Publishers.Include(x=>x.Books).FirstOrDefault(x=>x.Id == data && x.IsActive);
 
             if(publisher == null)
             {
