@@ -1,4 +1,5 @@
-﻿using ReadilyAPI.Application.Exceptions;
+﻿using FluentValidation;
+using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
 using ReadilyAPI.DataAccess;
@@ -26,6 +27,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 
         public void Execute(UpdatePublisherDto data)
         {
+            _validator.ValidateAndThrow(data);
+
             var publisher = Context.Publishers.FirstOrDefault(x=>x.Id == data.Id && x.IsActive);
 
             if(publisher == null) {
