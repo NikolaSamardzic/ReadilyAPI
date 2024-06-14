@@ -57,5 +57,12 @@ namespace ReadilyAPI.API.Controllers
             _commandHandler.HandleCommand(command, id);
             return StatusCode(204);
         }
+
+        [HttpPatch("{id}/activate")]
+        public IActionResult Activate(int id, IActivateRoleCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+            return StatusCode(204);
+        }
     }
 }
