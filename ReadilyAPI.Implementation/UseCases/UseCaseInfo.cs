@@ -19,6 +19,6 @@ namespace ReadilyAPI.Implementation.UseCases
             }
         }
 
-        public static int MaxUseCaseId => 18;
+        public static int MaxUseCaseId => 19;
     }
 }
