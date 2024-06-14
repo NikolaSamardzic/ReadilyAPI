@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReadilyAPI.Application.UseCases.Queries.Searches;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

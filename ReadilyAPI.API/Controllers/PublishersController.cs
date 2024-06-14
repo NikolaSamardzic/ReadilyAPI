@@ -4,6 +4,7 @@ using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
 using ReadilyAPI.Application.UseCases.Queries;
+using ReadilyAPI.Application.UseCases.Queries.Searches;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,10 +27,7 @@ namespace ReadilyAPI.API.Controllers
 
         // GET: api/<PublishersController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public IActionResult Get([FromQuery] PublisherSearch search, [FromServices] IGetPublishersQuery query) => Ok(_queryHandler.HandleQuery(query, search));
 
         // GET api/<PublishersController>/5
         [HttpGet("{id}")]
@@ -37,7 +35,7 @@ namespace ReadilyAPI.API.Controllers
 
         // POST api/<PublishersController>
         [HttpPost]
-        public IActionResult Post([FromBody] CreatePublisherDto dto, ICreatePublisherCommand command)
+        public IActionResult Post([FromBody] CreatePublisherDto dto, [FromServices] ICreatePublisherCommand command)
         {
             _commandHandler.HandleCommand(command, dto);
 
@@ -46,7 +44,7 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<PublishersController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdatePublisherDto dto, IUpdatePublisherCommand command)
+        public IActionResult Put(int id, [FromBody] UpdatePublisherDto dto, [FromServices] IUpdatePublisherCommand command)
         {
             dto.Id = id;
             _commandHandler.HandleCommand(command, dto);
