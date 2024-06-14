@@ -215,6 +215,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetOrderStatusQuery, EfGetOrderStatusesQuery>();
             services.AddTransient<IFindDeliveryTypeQuery, EfFindDeliveryTypeQuery>();
             services.AddTransient<IGetDeliveryTypesQuery,EfGetDeliveryTypeQuery>();
+            services.AddTransient<IGetLogEntriesQuery, EfGetLogEntriesQuery>();
         }
     }
 }
