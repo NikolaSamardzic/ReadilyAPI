@@ -63,6 +63,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateRoleValidator>();
             services.AddTransient<UpdateRoleValidator>();
             services.AddTransient<CreatePublisherValidator>();
+            services.AddTransient<UpdatePublisherValidator>();
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -179,6 +180,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteRoleCommand, EfDeleteRoleCommand>();
             services.AddTransient<IActivateRoleCommand, EfActivateRoleCommand>();
             services.AddTransient<ICreatePublisherCommand, EfCreatePublisherCommand>();
+            services.AddTransient<IUpdatePublisherCommand, EfUpdatePublisherCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

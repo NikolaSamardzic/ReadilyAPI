@@ -48,8 +48,12 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<PublishersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdatePublisherDto dto, IUpdatePublisherCommand command)
         {
+            dto.Id = id;
+            _commandHandler.HandleCommand(command, dto);
+
+            return StatusCode(204);
         }
 
         // DELETE api/<PublishersController>/5
