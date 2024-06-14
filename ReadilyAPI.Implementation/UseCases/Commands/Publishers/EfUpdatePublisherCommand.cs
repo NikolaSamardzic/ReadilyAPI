@@ -26,7 +26,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 
         public void Execute(UpdatePublisherDto data)
         {
-            var publisher = Context.Publishers.FirstOrDefault(x=>x.Id == data.Id);
+            var publisher = Context.Publishers.FirstOrDefault(x=>x.Id == data.Id && x.IsActive);
 
             if(publisher == null) {
                 throw new EntityNotFoundException(data.Id, nameof(Domain.Publisher));
