@@ -181,6 +181,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IActivateRoleCommand, EfActivateRoleCommand>();
             services.AddTransient<ICreatePublisherCommand, EfCreatePublisherCommand>();
             services.AddTransient<IUpdatePublisherCommand, EfUpdatePublisherCommand>();
+            services.AddTransient<IDeletePublisherCommand, EfDeletePublisherCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

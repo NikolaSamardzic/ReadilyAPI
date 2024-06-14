@@ -58,8 +58,11 @@ namespace ReadilyAPI.API.Controllers
 
         // DELETE api/<PublishersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id, IDeletePublisherCommand command)
         {
+            _commandHandler.HandleCommand(command, id);
+
+            return StatusCode(204);
         }
     }
 }
