@@ -199,6 +199,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateDeliveryTypeCommand, EfCreateDeliveryTypesCommand>();
             services.AddTransient<IActivateOrderStatusCommand, EfActivateOrderStatuesCommand>();
             services.AddTransient<IUpdateDeliveryTypeCommand, EfUpdateDeliveryTypeCommand>();
+            services.AddTransient<IDeleteDeliveryTypeCommand, EfDeleteDeliveryTypeCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
