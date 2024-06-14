@@ -18,7 +18,7 @@ namespace ReadilyAPI.API.Controllers
         private readonly ICommandHandler _commandHandler;
         private readonly IQueryHandler _queryHandler;
 
-        public PublishersController(ICommandHandler commandHandler, IQueryHandler queryHandler)
+        public PublishersController([FromServices] ICommandHandler commandHandler, [FromServices] IQueryHandler queryHandler)
         {
             _commandHandler = commandHandler;
             _queryHandler = queryHandler;
@@ -54,7 +54,15 @@ namespace ReadilyAPI.API.Controllers
 
         // DELETE api/<PublishersController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id, IDeletePublisherCommand command)
+        public IActionResult Delete(int id, [FromServices] IDeletePublisherCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+
+            return StatusCode(204);
+        }
+
+        [HttpPatch("{id}/activate")]
+        public IActionResult Activate(int id, [FromServices] IActivatePublisherCommand command)
         {
             _commandHandler.HandleCommand(command, id);
 

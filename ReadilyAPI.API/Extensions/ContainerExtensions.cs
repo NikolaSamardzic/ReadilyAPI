@@ -16,6 +16,7 @@ using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
+using ReadilyAPI.Implementation.UseCases.Commands;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
@@ -182,6 +183,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreatePublisherCommand, EfCreatePublisherCommand>();
             services.AddTransient<IUpdatePublisherCommand, EfUpdatePublisherCommand>();
             services.AddTransient<IDeletePublisherCommand, EfDeletePublisherCommand>();
+            services.AddTransient<IActivatePublisherCommand, EfActivatePublisherCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
