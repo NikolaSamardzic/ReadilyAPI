@@ -73,6 +73,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateOrderStatusValidator>();
             services.AddTransient<UpdateOrderStatusValidatior>();
             services.AddTransient<CreateDeliveryTypeValidator>();
+            services.AddTransient<UpdateDeliveryTypeValidator>();
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -197,6 +198,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteOrderStatusCommand, EfDeleteOrderStatusCommand>();
             services.AddTransient<ICreateDeliveryTypeCommand, EfCreateDeliveryTypesCommand>();
             services.AddTransient<IActivateOrderStatusCommand, EfActivateOrderStatuesCommand>();
+            services.AddTransient<IUpdateDeliveryTypeCommand, EfUpdateDeliveryTypeCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

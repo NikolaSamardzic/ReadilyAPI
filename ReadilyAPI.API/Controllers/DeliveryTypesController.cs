@@ -46,8 +46,11 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<DeliveryTypesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdateDeliveryTypeDto dto, IUpdateDeliveryTypeCommand command)
         {
+            dto.Id = id;
+            _commandHandler.HandleCommand(command, dto);
+            return StatusCode(204);
         }
 
         // DELETE api/<DeliveryTypesController>/5
