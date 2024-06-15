@@ -45,7 +45,7 @@ namespace ReadilyAPI.API.Extensions
 
                 if(accessor == null || accessor.HttpContext == null)
                 {
-                    return new ConsoleErrorLogger();
+                    return new DbErrorLogger(context);
                 }
 
                 var logger = accessor.HttpContext.Request.Headers["Logger"].FirstOrDefault();
@@ -216,6 +216,8 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IFindDeliveryTypeQuery, EfFindDeliveryTypeQuery>();
             services.AddTransient<IGetDeliveryTypesQuery,EfGetDeliveryTypeQuery>();
             services.AddTransient<IGetLogEntriesQuery, EfGetLogEntriesQuery>();
+            services.AddTransient<IGetErrorLogsQuery, EfGetErrorLogsQuery>();
+            services.AddTransient<IFindErrorLogQuery, EfFindErrorLogQuery>();
         }
     }
 }

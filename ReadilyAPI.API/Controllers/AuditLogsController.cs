@@ -12,19 +12,24 @@ namespace ReadilyAPI.API.Controllers
     [ApiController]
     public class AuditLogsController : ControllerBase
     {
-        private readonly ICommandHandler _commandHandler;
         private readonly IQueryHandler _queryHandler;
 
-        public AuditLogsController(ICommandHandler commandHandler, IQueryHandler queryHandler)
+        public AuditLogsController(IQueryHandler queryHandler)
         {
-            _commandHandler = commandHandler;
             _queryHandler = queryHandler;
         }
-
+        
         // GET: api/<AuditLogsController>
         [HttpGet("entries")]
         public IActionResult Entries([FromQuery] LogEntriesSearch search, IGetLogEntriesQuery query)
-            => Ok(_queryHandler.HandleQuery(query,search));
+        => Ok(_queryHandler.HandleQuery(query,search));
 
+        [HttpGet("errors")]
+        public IActionResult Errors([FromQuery] ErrorLogSearch search, IGetErrorLogsQuery query)
+        => Ok(_queryHandler.HandleQuery(query, search));
+        
+        [HttpGet("errors/{id}")]
+        public IActionResult ErrorsFind(Guid id, IFindErrorLogQuery query)
+        => Ok(_queryHandler.HandleQuery(query, id));
     }
 }

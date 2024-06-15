@@ -6,7 +6,7 @@ namespace ReadilyAPI.Application.Exceptions
 {
     public class EntityNotFoundException : Exception
     {
-        public EntityNotFoundException(int id, string entityType)
+        public EntityNotFoundException(object id, string entityType)
             :base($"Entity of type {entityType} with an id of {id} was not found.")
         {
                 
