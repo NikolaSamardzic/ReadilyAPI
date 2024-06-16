@@ -214,6 +214,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateUserCommand, EfCreateUserCommand>();
             services.AddTransient<IVerifyUserCommand, EfVerifyUserCommand>();
             services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
+            services.AddTransient<IUpdateUserCommand, EfUpdateUserCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -246,6 +247,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateDeliveryTypeValidator>();
             services.AddTransient<UpdateDeliveryTypeValidator>();
             services.AddTransient<CreateUserValidator>();
+            services.AddTransient<UpdateUserValidator>();
         }
     }
 }

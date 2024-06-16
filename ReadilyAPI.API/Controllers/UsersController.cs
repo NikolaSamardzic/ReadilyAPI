@@ -45,9 +45,12 @@ namespace ReadilyAPI.API.Controllers
         }
 
         // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut()]
+        public IActionResult Put([FromBody] UpdateUserDto dto, IApplicationActor actor, IUpdateUserCommand command)
         {
+            dto.Id = actor.Id;
+            _commandHandler.HandleCommand(command,dto);
+            return StatusCode(204);
         }
 
         // DELETE api/<UsersController>/5
