@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ReadilyAPI.Application.UseCases.Commands.Users
 {
-    public interface IRegisterUserCommand : ICommand<RegisterUserDto>
+    public interface ICreateUserCommand : ICommand<CreateUserDto>
     {
     }
 }

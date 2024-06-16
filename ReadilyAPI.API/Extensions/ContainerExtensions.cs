@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Configuration;
 using ReadilyAPI.API.DTO.Configuration;
@@ -8,6 +9,7 @@ using ReadilyAPI.API.ExceptionLoggers;
 using ReadilyAPI.API.Jwt;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.Logging;
+using ReadilyAPI.Application.Notification;
 using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
@@ -15,20 +17,24 @@ using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
+using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
+using ReadilyAPI.Implementation.Notification;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses;
 using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
+using ReadilyAPI.Implementation.UseCases.Commands.Users;
 using ReadilyAPI.Implementation.UseCases.Queries;
 using ReadilyAPI.Implementation.Validators.Category;
 using ReadilyAPI.Implementation.Validators.DeliveryType;
 using ReadilyAPI.Implementation.Validators.OrderStatus;
 using ReadilyAPI.Implementation.Validators.Publisher;
 using ReadilyAPI.Implementation.Validators.Role;
+using ReadilyAPI.Implementation.Validators.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -62,18 +68,22 @@ namespace ReadilyAPI.API.Extensions
             });
         }
 
-        public static void AddValidators(this IServiceCollection services)
+        public static void AddNotification(this IServiceCollection services, AppSettings settings)
         {
-            services.AddTransient<CreateCategoryValidator>();
-            services.AddTransient<UpdateCategoryValidator>();
-            services.AddTransient<CreateRoleValidator>();
-            services.AddTransient<UpdateRoleValidator>();
-            services.AddTransient<CreatePublisherValidator>();
-            services.AddTransient<UpdatePublisherValidator>();
-            services.AddTransient<CreateOrderStatusValidator>();
-            services.AddTransient<UpdateOrderStatusValidatior>();
-            services.AddTransient<CreateDeliveryTypeValidator>();
-            services.AddTransient<UpdateDeliveryTypeValidator>();
+            services.AddScoped<IEmailService>(x => {
+                var accessor = x.GetService<IHttpContextAccessor>();
+ 
+                var request = accessor.HttpContext.Request;
+
+                if (request.Path.ToString().ToLower().Contains("users"))
+                {
+                    return new ActivateUserEmailService(settings.SmtpSettings);
+                }else if(request.Path.ToString().ToLower().Contains("message"))
+                {
+                    return new MessageAdminEmailService(settings.SmtpSettings);
+                }
+                return new ActivateUserEmailService(settings.SmtpSettings);
+            });
         }
 
         public static void AddJwt(this IServiceCollection services, AppSettings settings)
@@ -201,6 +211,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUpdateDeliveryTypeCommand, EfUpdateDeliveryTypeCommand>();
             services.AddTransient<IDeleteDeliveryTypeCommand, EfDeleteDeliveryTypeCommand>();
             services.AddTransient<IActivateDeliveryTypeCommand, EfActivateDeliveryTypeCommand>();
+            services.AddTransient<ICreateUserCommand, EfCreateUserCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -218,6 +229,21 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetLogEntriesQuery, EfGetLogEntriesQuery>();
             services.AddTransient<IGetErrorLogsQuery, EfGetErrorLogsQuery>();
             services.AddTransient<IFindErrorLogQuery, EfFindErrorLogQuery>();
+        }
+
+        public static void AddValidators(this IServiceCollection services)
+        {
+            services.AddTransient<CreateCategoryValidator>();
+            services.AddTransient<UpdateCategoryValidator>();
+            services.AddTransient<CreateRoleValidator>();
+            services.AddTransient<UpdateRoleValidator>();
+            services.AddTransient<CreatePublisherValidator>();
+            services.AddTransient<UpdatePublisherValidator>();
+            services.AddTransient<CreateOrderStatusValidator>();
+            services.AddTransient<UpdateOrderStatusValidatior>();
+            services.AddTransient<CreateDeliveryTypeValidator>();
+            services.AddTransient<UpdateDeliveryTypeValidator>();
+            services.AddTransient<CreateUserValidator>();
         }
     }
 }

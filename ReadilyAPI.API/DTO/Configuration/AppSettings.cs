@@ -1,9 +1,12 @@
-﻿namespace ReadilyAPI.API.DTO.Configuration
+﻿using ReadilyAPI.Application.Notification;
+
+namespace ReadilyAPI.API.DTO.Configuration
 {
     public class AppSettings
     {
         public JwtSettings Jwt {  get; set; }
         public string PasswordSalt { get; set; }
+        public SmtpSettings SmtpSettings { get; set; }
     }
 
     public class JwtSettings

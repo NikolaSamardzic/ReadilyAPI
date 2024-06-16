@@ -9,6 +9,7 @@ using ReadilyAPI.API.Jwt;
 using ReadilyAPI.API.Jwt.TokenStorage;
 using ReadilyAPI.API.Middleware;
 using ReadilyAPI.Application.Logging;
+using ReadilyAPI.Application.Notification;
 using ReadilyAPI.Application.Uploads;
 using ReadilyAPI.Application.UseCaseHandling;
 using ReadilyAPI.Application.UseCaseHandling.Command;
@@ -32,6 +33,9 @@ builder.Services.AddTransient<ReadilyContext>();
 
 var appSettings = new AppSettings();
 builder.Configuration.Bind(appSettings);
+var smtpSettings = new SmtpSettings();
+builder.Configuration.Bind(smtpSettings);
+
 builder.Services.AddTransient<ITokenStorage,InMemoryTokenStorage>();
 builder.Services.AddTransient<IBase64FileUploader, Base64FileUploader>();
 builder.Services.AddScoped<IUseCaseLogger, EfUseCaseLogger>();
@@ -44,6 +48,7 @@ builder.Services.AddCommands();
 builder.Services.AddQueries();
 builder.Services.AddValidators();
 builder.Services.AddLogger();
+builder.Services.AddNotification(appSettings);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
