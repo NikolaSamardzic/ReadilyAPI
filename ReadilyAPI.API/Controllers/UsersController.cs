@@ -73,5 +73,12 @@ namespace ReadilyAPI.API.Controllers
             _commandHandler.HandleCommand(command, id);
             return StatusCode(204);
         }
+
+        [HttpPatch("{id}/unban")]
+        public IActionResult Unban(int id, IUnBanUserCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+            return StatusCode(204);
+        }
     }
 }
