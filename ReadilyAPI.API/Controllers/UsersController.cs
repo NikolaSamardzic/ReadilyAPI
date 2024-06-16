@@ -81,6 +81,13 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        [HttpPost("favoriteCategories")]
+        public IActionResult FavoriteCategories([FromBody] CreateUserFavoriteCategoriesDto dto, ICreateUserFavoriteCategoriesCommand command, IApplicationActor actor)
+        {
+            dto.UserId = actor.Id;
 
+            _commandHandler.HandleCommand(command, dto);
+            return StatusCode(204);
+        }
     }
 }
