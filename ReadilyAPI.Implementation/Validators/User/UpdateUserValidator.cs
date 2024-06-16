@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.DTO.User;
 using ReadilyAPI.DataAccess;
@@ -27,7 +28,7 @@ namespace ReadilyAPI.Implementation.Validators.User
                 .NotEmpty()
                 .Matches("^[a-zA-Z0-9.šđžćčČĆŠĐŽ()\\/\\-_]{5,}$")
                 .WithMessage("Your username must be at least 5 characters long and can only contain letters, numbers, periods, parentheses, forward slashes, hyphens, and underscores.")
-                .Must(x => !_context.Users.Any(u => u.Username == x))
+                .Must(x => !_context.Users.Any(u => u.Username == x && u.Id != _actor.Id))
                 .WithMessage("Username is already in use.");
 
             RuleFor(x => x.FirstName)
@@ -92,7 +93,8 @@ namespace ReadilyAPI.Implementation.Validators.User
 
             });
 
-            When(x => _context.Users.Find(_actor.Id).Role.Name == "Writer", () =>
+            When(x => _context.Users.Include(x=>x.Role)
+                                                        .First(x=>x.Id ==_actor.Id).Role.Name == "Writer", () =>
             {
                 RuleFor(x => x.Biography)
                                 .NotNull()

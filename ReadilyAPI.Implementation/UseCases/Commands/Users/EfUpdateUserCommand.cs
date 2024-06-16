@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
@@ -32,7 +33,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
             _validator.ValidateAndThrow(data);
 
-            var user = Context.Users.Find(_actor.Id);
+            var user = Context.Users
+                .Include(x=>x.Role)
+                .Include(x=>x.Avatar)
+                .Include(x=>x.Biography)
+                .Include(x=>x.Address)
+                .First(x=> x.Id == _actor.Id);
 
             user.Username = data.Username;
             user.FirstName = data.FirstName;
@@ -68,7 +74,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 
             if(data.Avatar != null && user.Avatar != null)
             {
-                var oldImage = user.Avatar.Src;
+                var oldImage = Path.Combine("wwwroot", "images", "avatars", user.Avatar.Src);
                 user.Avatar.Src = data.Avatar;
 
                 var tempFile = Path.Combine("wwwroot", "temp", data.Avatar);
