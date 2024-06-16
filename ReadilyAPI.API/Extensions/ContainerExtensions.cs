@@ -215,6 +215,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IVerifyUserCommand, EfVerifyUserCommand>();
             services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
             services.AddTransient<IUpdateUserCommand, EfUpdateUserCommand>();
+            services.AddTransient<IBanUserCommand, EfBanUserCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

@@ -66,5 +66,12 @@ namespace ReadilyAPI.API.Controllers
             _commandHandler.HandleCommand(command, id);
             return Ok(new {message = "User is verified."});
         }
+
+        [HttpPatch("{id}/ban")]
+        public IActionResult Ban(int id, IBanUserCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+            return StatusCode(204);
+        }
     }
 }
