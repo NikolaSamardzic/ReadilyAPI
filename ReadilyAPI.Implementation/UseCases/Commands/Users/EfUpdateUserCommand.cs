@@ -70,6 +70,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                     PostalCode = data.Address.PostalCode,
                 };
                 user.Address = address;
+            }else if(user.Address != null)
+            {
+                Context.Addresses.Remove(user.Address);
             }
 
             if(data.Avatar != null && user.Avatar != null)
