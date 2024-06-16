@@ -55,6 +55,11 @@ namespace ReadilyAPI.API.Controllers
         {
         }
 
-
+        [HttpGet("{id}/verify")]
+        public IActionResult Verify(string id, IVerifyUserCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+            return Ok(new {message = "User is verified."});
+        }
     }
 }
