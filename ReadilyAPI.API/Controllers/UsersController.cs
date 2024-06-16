@@ -80,5 +80,7 @@ namespace ReadilyAPI.API.Controllers
             _commandHandler.HandleCommand(command, id);
             return StatusCode(204);
         }
+
+
     }
 }
