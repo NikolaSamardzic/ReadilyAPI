@@ -51,11 +51,18 @@ namespace ReadilyAPI.API.Jwt
                 throw new UnauthorizedAccessException("Invalid credentials");
             }
 
+            var userUseCases = user.Role.RoleUseCases.Select(x => x.UseCaseId).ToList();
+            var useCasesToRemove = _context.UserUseCases.Where(x => x.UserId == user.Id && x.Status == false).Select(x => x.UseCaseId).ToList();
+            var useCasesToAdd = _context.UserUseCases.Where(x => x.UserId == user.Id && x.Status).Select(x => x.UseCaseId ).ToList();
+
+            userUseCases.RemoveAll(x => useCasesToRemove.Contains(x));
+            userUseCases.AddRange(useCasesToAdd);
+
             int id = user.Id;
             string email = user.Email;
             string firstName = user.FirstName;
             string lastName = user.LastName;
-            List<int> useCases = user.Role.RoleUseCases.Select(x => x.UseCaseId).ToList();
+            List<int> useCases = userUseCases.Distinct().ToList();
 
             var tokenId = Guid.NewGuid().ToString();
             

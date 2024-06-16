@@ -89,5 +89,12 @@ namespace ReadilyAPI.API.Controllers
             _commandHandler.HandleCommand(command, dto);
             return StatusCode(204);
         }
+
+        [HttpPost("userUseCase")]
+        public IActionResult UseUserCase([FromBody] CreateUserUseCaseDto dto, ICreateUserUseCaseCommand command)
+        {
+            _commandHandler.HandleCommand(command, dto);
+            return StatusCode(204);
+        }
     }
 }
