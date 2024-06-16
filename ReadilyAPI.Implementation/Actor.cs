@@ -24,7 +24,7 @@ namespace ReadilyAPI.Implementation
 
     public class UnauthorizedActor : IApplicationActor
     {
-        public int Id => 0;
+        public int Id => 8;
 
         public string Username => "unauthorized";
 

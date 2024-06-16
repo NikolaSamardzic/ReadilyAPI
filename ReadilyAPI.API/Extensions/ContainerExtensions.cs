@@ -232,6 +232,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetLogEntriesQuery, EfGetLogEntriesQuery>();
             services.AddTransient<IGetErrorLogsQuery, EfGetErrorLogsQuery>();
             services.AddTransient<IFindErrorLogQuery, EfFindErrorLogQuery>();
+            services.AddTransient<IUserProfileQuery, EfUserProfileQuery>();
         }
 
         public static void AddValidators(this IServiceCollection services)

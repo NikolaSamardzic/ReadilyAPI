@@ -4,6 +4,7 @@ using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
+using ReadilyAPI.Application.UseCases.Queries;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,6 +35,12 @@ namespace ReadilyAPI.API.Controllers
         public string Get(int id)
         {
             return "value";
+        }
+
+        [HttpGet("profile")]
+        public IActionResult Get(IApplicationActor actor, IUserProfileQuery query)
+        {
+            return Ok(_queryHandler.HandleQuery(query,actor.Id));
         }
 
         // POST api/<UsersController>
