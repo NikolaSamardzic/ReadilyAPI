@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadilyAPI.Implementation.UseCases.Commands.Users
+namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfUserProfileQuery : EfUseCase, IUserProfileQuery
     {
@@ -25,13 +25,14 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         public UserDto Execute(int search)
         {
             var user = Context.Users
-                .Include(x=>x.Role)
-                .Include(x=>x.Address)
-                .Include(x=>x.Biography)
-                .Include(x=> x.Avatar)
-                .First(x=>x.Id == search);
+                .Include(x => x.Role)
+                .Include(x => x.Address)
+                .Include(x => x.Biography)
+                .Include(x => x.Avatar)
+                .First(x => x.Id == search);
 
-            var result = new UserDto {
+            var result = new UserDto
+            {
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -44,7 +45,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                 {
                     Text = "/"
                 },
-                Address = new AddressDto{
+                Address = new AddressDto
+                {
                     AddressName = "/",
                     AddressNumber = "/",
                     City = "/",
@@ -54,12 +56,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                 }
             };
 
-            if(user.Biography != null )
+            if (user.Biography != null)
             {
                 result.Biography.Text = user.Biography.Text;
             }
 
-            if(user.Address != null )
+            if (user.Address != null)
             {
                 result.Address.AddressNumber = user.Address.AddressNumber;
                 result.Address.AddressName = user.Address.AddressName;
