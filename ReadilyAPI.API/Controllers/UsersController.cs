@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Users;
@@ -50,9 +51,11 @@ namespace ReadilyAPI.API.Controllers
         }
 
         // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete()]
+        public IActionResult Delete(IDeleteUserCommand command, IApplicationActor actor)
         {
+            _commandHandler.HandleCommand(command,actor.Id);
+            return StatusCode(204);
         }
 
         [HttpGet("{id}/verify")]

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadilyAPI.Implementation.Validators.User
+namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 {
     public class EfVerifyUserCommand : EfUseCase, IVerifyUserCommand
     {
@@ -23,9 +23,10 @@ namespace ReadilyAPI.Implementation.Validators.User
 
         public void Execute(string data)
         {
-            var user = Context.Users.FirstOrDefault(x=>x.Token == data);
-            
-            if(user == null) {
+            var user = Context.Users.FirstOrDefault(x => x.Token == data);
+
+            if (user == null)
+            {
                 throw new EntityNotFoundException(data, nameof(Domain.User));
             }
             user.EmailVerifiedAt = DateTime.UtcNow;
