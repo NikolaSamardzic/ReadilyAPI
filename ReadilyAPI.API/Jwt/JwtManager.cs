@@ -39,15 +39,22 @@ namespace ReadilyAPI.API.Jwt
                 .Include(x=>x.UserUseCases)
                 .FirstOrDefault(x=>x.Username == username && x.IsActive && !x.IsBanned && x.EmailVerifiedAt.HasValue);
 
+            if(user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid credentials");
+            }
+
             var verified = BCrypt.Net.BCrypt.Verify(password, user.Password);
             
-            if (user == null || user.Role == null || !user.Role.IsActive || !verified) 
+            if (user.Role == null || !user.Role.IsActive || !verified) 
             {
                 throw new UnauthorizedAccessException("Invalid credentials");
             }
 
             int id = user.Id;
             string email = user.Email;
+            string firstName = user.FirstName;
+            string lastName = user.LastName;
             List<int> useCases = user.Role.RoleUseCases.Select(x => x.UseCaseId).ToList();
 
             var tokenId = Guid.NewGuid().ToString();
@@ -62,6 +69,8 @@ namespace ReadilyAPI.API.Jwt
                 new Claim("Id", id.ToString()),
                 new Claim("Username",username),
                 new Claim("Email", email),
+                new Claim("FirstName",firstName),
+                new Claim("LastName", lastName),
                 new Claim("UseCases", JsonConvert.SerializeObject(useCases))
             };
 
@@ -74,7 +83,7 @@ namespace ReadilyAPI.API.Jwt
                 issuer: _issuer,
                 audience: "Any",
                 claims: claims,
-                notBefore: now.AddSeconds(_seconds),
+                notBefore: now,
                 expires: now.AddSeconds(_seconds),
                 signingCredentials: credentials);
 

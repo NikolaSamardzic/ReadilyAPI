@@ -175,12 +175,13 @@ namespace ReadilyAPI.API.Extensions
         {
             services.AddScoped<IApplicationActorProvider>(x => {
                 var accessor = x.GetService<IHttpContextAccessor>();
+                var tokenStorage = x.GetService<ITokenStorage>();
 
                 var request = accessor.HttpContext.Request;
 
                 var authHeader = request.Headers.Authorization.ToString();
 
-                return new JwtAuthorizationApplicationActorProvider(authHeader);
+                return new JwtAuthorizationApplicationActorProvider(authHeader, tokenStorage);
             });
 
             services.AddScoped<IApplicationActor>(x =>

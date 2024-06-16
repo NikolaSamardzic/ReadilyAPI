@@ -37,6 +37,12 @@ var smtpSettings = new SmtpSettings();
 builder.Configuration.Bind(smtpSettings);
 
 builder.Services.AddTransient<ITokenStorage,InMemoryTokenStorage>();
+builder.Services.AddTransient<JwtManager>(x =>
+{
+    var context = x.GetService<ReadilyContext>();
+    var tokenStorage = x.GetService<ITokenStorage>();
+    return new JwtManager(context, appSettings.Jwt.Issuer, appSettings.Jwt.DurationSeconds,   tokenStorage, appSettings.Jwt.SecretKey);
+});
 builder.Services.AddTransient<IBase64FileUploader, Base64FileUploader>();
 builder.Services.AddScoped<IUseCaseLogger, EfUseCaseLogger>();
 
@@ -68,6 +74,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

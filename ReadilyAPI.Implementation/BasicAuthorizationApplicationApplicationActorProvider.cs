@@ -11,8 +11,8 @@ namespace ReadilyAPI.Implementation
 {
     public class BasicAuthorizationApplicationApplicationActorProvider : IApplicationActorProvider
     {
-        private string _authorizationHeader;
-        private ReadilyContext _context;
+        private readonly string _authorizationHeader;
+        private readonly ReadilyContext _context;
 
         public BasicAuthorizationApplicationApplicationActorProvider(string authorizationHeader, ReadilyContext context)
         {

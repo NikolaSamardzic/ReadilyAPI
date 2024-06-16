@@ -33,6 +33,10 @@ namespace ReadilyAPI.API.Middleware
                 await context.Response.WriteAsJsonAsync(errors);
             }
             catch (UnauthorizedException ex) {
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = ex.Message
+                });
                 context.Response.StatusCode = 401;
             }
             catch (EntityReferencedException ex)
@@ -53,7 +57,12 @@ namespace ReadilyAPI.API.Middleware
             catch (UnauthorizedAccessException ex)
             {
                 context.Response.StatusCode = 401;
-            }catch(EntityNotFoundException ex)
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = ex.Message,
+                });
+            }
+            catch(EntityNotFoundException ex)
             {
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsJsonAsync(new
