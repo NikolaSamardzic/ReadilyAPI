@@ -51,6 +51,17 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
                 book.Price = data.Price;
 
                 Context.Prices.Add(price);
+
+
+                var orders = Context.Orders
+                    .Include(x => x.BookOrders)
+                    .Where(x => x.FinishedAt == null && x.BookOrders.Any(bo => bo.BookId == book.Id))
+                    .ToList();
+
+                foreach (var order in orders)
+                {
+                    order.TotalPrice = order.BookOrders.Sum(x => (decimal)x.Book.Price * x.Quantity);
+                }
             }
 
             Context.BooksCategories.RemoveRange(Context.BooksCategories.Where(x => x.BookId == data.Id));
