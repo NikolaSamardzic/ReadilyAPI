@@ -12,6 +12,7 @@ using ReadilyAPI.Application.Logging;
 using ReadilyAPI.Application.Notification;
 using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
+using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
@@ -22,6 +23,7 @@ using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
 using ReadilyAPI.Implementation.Notification;
+using ReadilyAPI.Implementation.UseCases.Commands.Books;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses;
@@ -29,6 +31,7 @@ using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
 using ReadilyAPI.Implementation.UseCases.Commands.Users;
 using ReadilyAPI.Implementation.UseCases.Queries;
+using ReadilyAPI.Implementation.Validators.Books;
 using ReadilyAPI.Implementation.Validators.Category;
 using ReadilyAPI.Implementation.Validators.DeliveryType;
 using ReadilyAPI.Implementation.Validators.OrderStatus;
@@ -220,6 +223,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUnBanUserCommand, EfUnBanUserCommand>();
             services.AddTransient<ICreateUserFavoriteCategoriesCommand, EfCreateUserFavoriteCategoriesCommand>();
             services.AddTransient<ICreateUserUseCaseCommand, EfCreateUserUseCaseCommand>();
+            services.AddTransient<ICreateBookCommand, EfCreateBookCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -257,6 +261,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<UpdateUserValidator>();
             services.AddTransient<CreateUserFavoriteCategoriesValidator>();
             services.AddTransient<CreateUserUseCaseValidator>();
+            services.AddTransient<CreateBookValidator>();
         }
     }
 }

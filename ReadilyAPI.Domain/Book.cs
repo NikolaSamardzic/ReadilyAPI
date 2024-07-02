@@ -27,6 +27,7 @@ namespace ReadilyAPI.Domain
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Price> Prices { get; set; } = new List<Price>();
         public virtual ICollection<User> Wishlist { get; set; } = new List<User>();
+        public virtual ICollection<BookCategory> BookCategories { get; set; }
         #endregion
     }
 }

@@ -49,6 +49,10 @@ namespace ReadilyAPI.DataAccess.Configurations
             builder.HasOne(x=>x.Image)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.BookCategories)
+                .WithOne(x => x.Book)
+                .OnDelete(DeleteBehavior.Restrict);
             #endregion
         }
     }

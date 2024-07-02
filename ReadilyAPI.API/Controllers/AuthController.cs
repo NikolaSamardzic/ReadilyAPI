@@ -25,8 +25,6 @@ namespace ReadilyAPI.API.Controllers
         public IActionResult Post([FromBody] AuthRequest request, [FromServices] ReadilyContext context)
         => Ok(_manager.MakeToken(request.Username, request.Password));
 
-
-
         // DELETE api/<AuthController>/5
         [HttpDelete]
         public IActionResult Delete([FromServices] ITokenStorage storage)
