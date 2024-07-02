@@ -57,8 +57,11 @@ namespace ReadilyAPI.API.Controllers
 
         // DELETE api/<BooksController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id, IDeleteBookCommand command)
         {
+            _commandHandler.HandleCommand(command, id);
+
+            return NoContent();
         }
     }
 }

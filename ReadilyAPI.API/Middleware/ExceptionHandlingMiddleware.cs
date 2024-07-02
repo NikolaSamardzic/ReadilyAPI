@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.Logging;
 
@@ -77,6 +78,12 @@ namespace ReadilyAPI.API.Middleware
                 {
                     message = ex.Message,
                 });
+            }catch(ConflictException ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                var body = new { error = ex.Message };
+
+                await context.Response.WriteAsJsonAsync(body);
             }
             catch(Exception ex)
             {
