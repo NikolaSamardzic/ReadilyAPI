@@ -63,5 +63,14 @@ namespace ReadilyAPI.API.Controllers
 
             return NoContent();
         }
+
+        // PATCH api/<BooksController>/5/activate
+        [HttpPatch("{id}/activate")]
+        public IActionResult Activate(int id, IActivateBookCommand command)
+        {
+            _commandHandler.HandleCommand(command, id);
+
+            return NoContent();
+        }
     }
 }

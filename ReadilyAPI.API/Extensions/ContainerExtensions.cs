@@ -226,6 +226,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateBookCommand, EfCreateBookCommand>();
             services.AddTransient<IUpdateBookCommand, EfUpdateBookCommand>();
             services.AddTransient<IDeleteBookCommand, EfDeleteBookCommand>();
+            services.AddTransient<IActivateBookCommand, EfActivateBookCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
