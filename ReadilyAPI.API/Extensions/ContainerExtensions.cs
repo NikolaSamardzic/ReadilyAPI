@@ -224,6 +224,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateUserFavoriteCategoriesCommand, EfCreateUserFavoriteCategoriesCommand>();
             services.AddTransient<ICreateUserUseCaseCommand, EfCreateUserUseCaseCommand>();
             services.AddTransient<ICreateBookCommand, EfCreateBookCommand>();
+            services.AddTransient<IUpdateBookCommand, EfUpdateBookCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -262,6 +263,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateUserFavoriteCategoriesValidator>();
             services.AddTransient<CreateUserUseCaseValidator>();
             services.AddTransient<CreateBookValidator>();
+            services.AddTransient<UpdateBookValidator>();
         }
     }
 }

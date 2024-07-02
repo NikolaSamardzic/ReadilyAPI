@@ -4,7 +4,6 @@ using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.DTO.Books;
 using ReadilyAPI.DataAccess;
-//using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Books;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -49,7 +48,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
                 {
                     Src = data.Image,
                     Alt = "Book Image"
-
                 },
             };
 

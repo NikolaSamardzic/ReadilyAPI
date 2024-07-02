@@ -46,8 +46,13 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<BooksController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdateBookDto dto, IUpdateBookCommand command)
         {
+            dto.Id = id;
+
+            _commandHandler.HandleCommand<UpdateBookDto>(command, dto);
+
+            return NoContent();
         }
 
         // DELETE api/<BooksController>/5
