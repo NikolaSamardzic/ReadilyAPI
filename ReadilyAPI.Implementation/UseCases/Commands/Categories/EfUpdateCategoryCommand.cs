@@ -5,6 +5,8 @@ using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.DTO.Category;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation.Validators.Category;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,7 +50,41 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
             category.Parent = parent;
 
+            if (!string.IsNullOrEmpty(data.Image))
+            {
+                category.Image = new Domain.Image
+                {
+                    Src = data.Image,
+                    Alt = "Category Image"
+                };
+
+                var tempFile = Path.Combine("wwwroot", "temp", data.Image);
+                var destFile = Path.Combine("wwwroot", "images", "categories", data.Image);
+
+                using (var originalImage = Image.Load(tempFile))
+                {
+                    var smallerImage = ResizeImage(originalImage, height: 200);
+                    smallerImage.Save(destFile);
+                }
+
+                System.IO.File.Delete(tempFile);
+            }
+
             Context.SaveChanges();
+        }
+
+        private Image ResizeImage(Image originalImage, int height)
+        {
+            var ratio = (double)height / originalImage.Height;
+            var width = (int)(originalImage.Width * ratio);
+
+            var resizedImage = originalImage.Clone(context => context.Resize(new ResizeOptions
+            {
+                Size = new Size(width, height),
+                Mode = ResizeMode.Max
+            }));
+
+            return resizedImage;
         }
     }
 }

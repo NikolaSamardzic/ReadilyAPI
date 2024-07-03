@@ -51,6 +51,17 @@ namespace ReadilyAPI.Implementation.Validators.Category
                 .Must((dto,name) => !context.Categories.Any(c => c.Name == name && c.Id != dto.Id))
                 .WithMessage("Category name is in use.");
 
+            When(x => !string.IsNullOrEmpty(x.Image), () =>
+            {
+                RuleFor(x => x.Image).Must((x, fileName) =>
+                {
+                    var path = Path.Combine("wwwroot", "temp", fileName);
+
+                    var exists = Path.Exists(path);
+
+                    return exists;
+                }).WithMessage("File doesn't exist.");
+            });
         }
 
         private bool ValidateCategoryDepth(int? parentId)

@@ -23,12 +23,12 @@ namespace ReadilyAPI.DataAccess.Configurations
             #endregion
 
             #region Relations
-            builder.HasOne<User>()
+            builder.HasOne(x => x.User)
                 .WithMany(x=>x.Reviews)
                 .HasForeignKey(x=>x.UserId);
 
-            builder.HasOne<Book>()
-                .WithMany()
+            builder.HasOne(x => x.Book)
+                .WithMany(x => x.Reviews)
                 .HasForeignKey(x=>x.BookId);
             #endregion
         }

@@ -32,6 +32,15 @@ namespace ReadilyAPI.Implementation.Validators.Category
                 .WithMessage("Parent id doesn't exist.")
                 .Must(ValidateCategoryDepth)
                 .WithMessage("A category that is already a child cannot have children.");
+
+            RuleFor(x => x.Image).Must((x, fileName) =>
+            {
+                var path = Path.Combine("wwwroot", "temp", fileName);
+
+                var exists = Path.Exists(path);
+
+                return exists;
+            }).WithMessage("File doesn't exist.");
         }
 
         private bool ValidateCategoryDepth(int? parentId)

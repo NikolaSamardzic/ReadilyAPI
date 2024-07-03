@@ -32,6 +32,7 @@
     <Folder Include="wwwroot\images\books\large\" />
     <Folder Include="wwwroot\images\books\small\" />
     <Folder Include="wwwroot\images\comments\" />
+    <Folder Include="wwwroot\images\categories\" />
     <Folder Include="wwwroot\images\users\" />
     <Folder Include="wwwroot\temp\" />
   </ItemGroup>
