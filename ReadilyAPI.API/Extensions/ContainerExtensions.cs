@@ -247,6 +247,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUserProfileQuery, EfUserProfileQuery>();
             services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
             services.AddTransient<IFindBookQuery, EfFindBookQuery>();
+            services.AddTransient<IGetBooksQuery, EfGetBooksQuery>();
         }
 
         public static void AddValidators(this IServiceCollection services)

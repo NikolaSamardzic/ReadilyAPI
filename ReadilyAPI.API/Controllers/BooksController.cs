@@ -4,6 +4,7 @@ using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.DTO.Books;
 using ReadilyAPI.Application.UseCases.Queries;
+using ReadilyAPI.Application.UseCases.Queries.Searches;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,10 +25,8 @@ namespace ReadilyAPI.API.Controllers
 
         // GET: api/<BooksController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public IActionResult Get([FromQuery] BookSearch dto, [FromServices] IGetBooksQuery query) 
+            => Ok(_queryHandler.HandleQuery(query, dto));
 
         // GET api/<BooksController>/5
         [HttpGet("{id}")]
