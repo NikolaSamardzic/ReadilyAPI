@@ -17,6 +17,7 @@ using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
+using ReadilyAPI.Application.UseCases.Commands.Reviews;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -28,6 +29,7 @@ using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses;
 using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
+using ReadilyAPI.Implementation.UseCases.Commands.Reviews;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
 using ReadilyAPI.Implementation.UseCases.Commands.Users;
 using ReadilyAPI.Implementation.UseCases.Queries;
@@ -36,6 +38,7 @@ using ReadilyAPI.Implementation.Validators.Category;
 using ReadilyAPI.Implementation.Validators.DeliveryType;
 using ReadilyAPI.Implementation.Validators.OrderStatus;
 using ReadilyAPI.Implementation.Validators.Publisher;
+using ReadilyAPI.Implementation.Validators.Reviews;
 using ReadilyAPI.Implementation.Validators.Role;
 using ReadilyAPI.Implementation.Validators.User;
 using System.IdentityModel.Tokens.Jwt;
@@ -227,6 +230,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUpdateBookCommand, EfUpdateBookCommand>();
             services.AddTransient<IDeleteBookCommand, EfDeleteBookCommand>();
             services.AddTransient<IActivateBookCommand, EfActivateBookCommand>();
+            services.AddTransient<ICreateReviewCommand, EfCreateReviewCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -268,6 +272,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateUserUseCaseValidator>();
             services.AddTransient<CreateBookValidator>();
             services.AddTransient<UpdateBookValidator>();
+            services.AddTransient<CreateReviewValidator>();
         }
     }
 }
