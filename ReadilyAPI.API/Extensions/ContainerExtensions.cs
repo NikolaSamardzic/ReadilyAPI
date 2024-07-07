@@ -231,6 +231,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteBookCommand, EfDeleteBookCommand>();
             services.AddTransient<IActivateBookCommand, EfActivateBookCommand>();
             services.AddTransient<ICreateReviewCommand, EfCreateReviewCommand>();
+            services.AddTransient<IUpdateReviewCommand, EfUpdateReviewCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -273,6 +274,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateBookValidator>();
             services.AddTransient<UpdateBookValidator>();
             services.AddTransient<CreateReviewValidator>();
+            services.AddTransient<UpdateReviewValidator>();
         }
     }
 }

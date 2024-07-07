@@ -21,19 +21,6 @@ namespace ReadilyAPI.API.Controllers
             _queryHandler = queryHandler;
         }
 
-        // GET: api/<ReviewsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<ReviewsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<ReviewsController>
         [HttpPost]
@@ -46,14 +33,13 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<ReviewsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdateReviewDto dto, IUpdateReviewCommand command)
         {
-        }
+            dto.Id = id;
 
-        // DELETE api/<ReviewsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            _commandHandler.HandleCommand(command, dto);
+
+            return NoContent();
         }
     }
 }
