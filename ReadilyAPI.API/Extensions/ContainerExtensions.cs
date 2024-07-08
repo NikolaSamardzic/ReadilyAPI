@@ -16,6 +16,7 @@ using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.Commands.Comments;
 using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
+using ReadilyAPI.Application.UseCases.Commands.Messages;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.Commands.Reviews;
@@ -29,6 +30,7 @@ using ReadilyAPI.Implementation.UseCases.Commands.Books;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using ReadilyAPI.Implementation.UseCases.Commands.Comments;
 using ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes;
+using ReadilyAPI.Implementation.UseCases.Commands.Messages;
 using ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses;
 using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Reviews;
@@ -39,6 +41,7 @@ using ReadilyAPI.Implementation.Validators.Books;
 using ReadilyAPI.Implementation.Validators.Category;
 using ReadilyAPI.Implementation.Validators.Comment;
 using ReadilyAPI.Implementation.Validators.DeliveryType;
+using ReadilyAPI.Implementation.Validators.Message;
 using ReadilyAPI.Implementation.Validators.OrderStatus;
 using ReadilyAPI.Implementation.Validators.Publisher;
 using ReadilyAPI.Implementation.Validators.Reviews;
@@ -238,6 +241,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateCommentCommand, EfCreateCommentCommand>();
             services.AddTransient<IUpdateCommentCommand, EfUpdateCommentCommand>();
             services.AddTransient<IDeleteCommentCommand, EfDeleteCommentCommand>();
+            services.AddTransient<ICreateMessageCommand, EfCreateMessageCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -285,6 +289,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<UpdateReviewValidator>();
             services.AddTransient<CreateCommentValidator>();
             services.AddTransient<UpdateCommentValidator>();
+            services.AddTransient<CreateMessageValidator>();
         }
     }
 }
