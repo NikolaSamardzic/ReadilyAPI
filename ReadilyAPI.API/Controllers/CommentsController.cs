@@ -47,8 +47,13 @@ namespace ReadilyAPI.API.Controllers
 
         // PUT api/<CommentsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UpdateCommentDto dto, IUpdateCommentCommand command)
         {
+            dto.Id = id;
+
+            _commandHandler.HandleCommand(command, dto);
+
+            return NoContent();
         }
 
         // DELETE api/<CommentsController>/5

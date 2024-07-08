@@ -236,6 +236,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateReviewCommand, EfCreateReviewCommand>();
             services.AddTransient<IUpdateReviewCommand, EfUpdateReviewCommand>();
             services.AddTransient<ICreateCommentCommand, EfCreateCommentCommand>();
+            services.AddTransient<IUpdateCommentCommand, EfUpdateCommentCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -280,6 +281,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateReviewValidator>();
             services.AddTransient<UpdateReviewValidator>();
             services.AddTransient<CreateCommentValidator>();
+            services.AddTransient<UpdateCommentValidator>();
         }
     }
 }
