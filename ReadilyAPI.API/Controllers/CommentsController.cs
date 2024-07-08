@@ -4,6 +4,7 @@ using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Comments;
 using ReadilyAPI.Application.UseCases.DTO.Comments;
+using ReadilyAPI.Application.UseCases.Queries;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,10 +32,7 @@ namespace ReadilyAPI.API.Controllers
 
         // GET api/<CommentsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        public IActionResult Get(int id, IFindCommentQuery query) => Ok(_queryHandler.HandleQuery(query, id));
 
         // POST api/<CommentsController>
         [HttpPost]
@@ -58,8 +56,11 @@ namespace ReadilyAPI.API.Controllers
 
         // DELETE api/<CommentsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id, IDeleteCommentCommand command)
         {
+            _commandHandler.HandleCommand(command, id);
+
+            return NoContent();
         }
     }
 }

@@ -26,6 +26,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             var book = Context
                 .Books
                 .Include(x => x.Author)
+                .Include(x => x.Comments)
                 .Include(x => x.Image)
                 .Include(x => x.BookCategories)
                 .ThenInclude(x => x.Category)
@@ -50,6 +51,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 Image = book.Image.Src,
                 ReleaseDate = book.ReleaseDate,
                 Publisher = book.Publisher.Name,
+                CommentCount = book.Comments.Count,
                 Author = new Author
                 {
                     Id = book.Author.Id,

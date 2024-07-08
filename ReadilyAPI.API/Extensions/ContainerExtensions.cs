@@ -237,6 +237,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUpdateReviewCommand, EfUpdateReviewCommand>();
             services.AddTransient<ICreateCommentCommand, EfCreateCommentCommand>();
             services.AddTransient<IUpdateCommentCommand, EfUpdateCommentCommand>();
+            services.AddTransient<IDeleteCommentCommand, EfDeleteCommentCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -258,6 +259,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
             services.AddTransient<IFindBookQuery, EfFindBookQuery>();
             services.AddTransient<IGetBooksQuery, EfGetBooksQuery>();
+            services.AddTransient<IFindCommentQuery, EfFindCommentQuery>();
         }
 
         public static void AddValidators(this IServiceCollection services)
