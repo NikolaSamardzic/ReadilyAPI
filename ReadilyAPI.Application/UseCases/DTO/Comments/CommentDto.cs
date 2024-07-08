@@ -12,6 +12,7 @@ namespace ReadilyAPI.Application.UseCases.DTO.Comments
         public int Rating { get; set; }
         public IEnumerable<ImageDto> Images { get; set; }
         public UserCommentDto UserComment { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 
     public class UserCommentDto

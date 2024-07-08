@@ -42,6 +42,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             {
                 Id = comment.Id,
                 Text = comment.Text,
+                CreatedAt = comment.CreatedAt,
                 Rating = comment.Book.Reviews.FirstOrDefault(x => x.UserId == comment.UserId)?.Stars ?? 0,
                 Images = comment.Images.Select(i => new ImageDto
                 {
