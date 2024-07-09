@@ -22,6 +22,8 @@ using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.Commands.Reviews;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.Commands.Users;
+using ReadilyAPI.Application.UseCases.Commands.Wishlist;
+using ReadilyAPI.Application.UseCases.DTO.Wishlists;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
@@ -36,7 +38,9 @@ using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Reviews;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
 using ReadilyAPI.Implementation.UseCases.Commands.Users;
+using ReadilyAPI.Implementation.UseCases.Commands.Wishlist;
 using ReadilyAPI.Implementation.UseCases.Queries;
+using ReadilyAPI.Implementation.Validators;
 using ReadilyAPI.Implementation.Validators.Books;
 using ReadilyAPI.Implementation.Validators.Category;
 using ReadilyAPI.Implementation.Validators.Comment;
@@ -243,6 +247,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteCommentCommand, EfDeleteCommentCommand>();
             services.AddTransient<ICreateMessageCommand, EfCreateMessageCommand>();
             services.AddTransient<IDeleteMessageCommand, EfDeleteMessageCommand>();
+            services.AddTransient<ICreateWishlistCommand, EfCreateWishlistCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -292,6 +297,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateCommentValidator>();
             services.AddTransient<UpdateCommentValidator>();
             services.AddTransient<CreateMessageValidator>();
+            services.AddTransient<CreateWishlistValidator>();
         }
     }
 }
