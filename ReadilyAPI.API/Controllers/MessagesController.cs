@@ -4,6 +4,8 @@ using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
 using ReadilyAPI.Application.UseCases.Commands.Messages;
 using ReadilyAPI.Application.UseCases.DTO.Messages;
+using ReadilyAPI.Application.UseCases.Queries;
+using ReadilyAPI.Application.UseCases.Queries.Searches;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,10 +26,8 @@ namespace ReadilyAPI.API.Controllers
 
         // GET: api/<MessagesController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public IActionResult Get([FromQuery] MessageSearch search, IGetMessagesQuery query)
+            => Ok(_queryHandler.HandleQuery(query, search));
 
         // POST api/<MessagesController>
         [HttpPost]
