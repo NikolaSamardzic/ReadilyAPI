@@ -242,6 +242,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IUpdateCommentCommand, EfUpdateCommentCommand>();
             services.AddTransient<IDeleteCommentCommand, EfDeleteCommentCommand>();
             services.AddTransient<ICreateMessageCommand, EfCreateMessageCommand>();
+            services.AddTransient<IDeleteMessageCommand, EfDeleteMessageCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

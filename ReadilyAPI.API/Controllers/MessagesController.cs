@@ -29,13 +29,6 @@ namespace ReadilyAPI.API.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<MessagesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<MessagesController>
         [HttpPost]
         public IActionResult Post([FromBody] CreateMessageDto dto, ICreateMessageCommand command)
@@ -45,16 +38,13 @@ namespace ReadilyAPI.API.Controllers
             return NoContent();
         }
 
-        // PUT api/<MessagesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
         // DELETE api/<MessagesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id, IDeleteMessageCommand command)
         {
+            _commandHandler.HandleCommand(command, id);
+
+            return NoContent();
         }
     }
 }
