@@ -248,6 +248,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateMessageCommand, EfCreateMessageCommand>();
             services.AddTransient<IDeleteMessageCommand, EfDeleteMessageCommand>();
             services.AddTransient<ICreateWishlistCommand, EfCreateWishlistCommand>();
+            services.AddTransient<IDeleteWishlistCommand, EfDeleteWishlistCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

@@ -42,16 +42,13 @@ namespace ReadilyAPI.API.Controllers
             _commandHandler.HandleCommand(command,dto);
         }
 
-        // PUT api/<WishlistsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
         // DELETE api/<WishlistsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id, IDeleteWishlistCommand command)
         {
+            _commandHandler.HandleCommand(command, id);
+
+            return NoContent();
         }
     }
 }
