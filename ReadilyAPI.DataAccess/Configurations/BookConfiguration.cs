@@ -57,6 +57,10 @@ namespace ReadilyAPI.DataAccess.Configurations
             builder.HasMany<Wishlist>()
                 .WithOne(x=>x.Book)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany<BookOrder>()
+                .WithOne(x => x.Book)
+                .OnDelete(DeleteBehavior.Restrict);
             #endregion
         }
     }

@@ -21,6 +21,7 @@ using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.Commands.Reviews;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
+using ReadilyAPI.Application.UseCases.Commands.Shop;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.Commands.Wishlist;
 using ReadilyAPI.Application.UseCases.DTO.Wishlists;
@@ -37,6 +38,7 @@ using ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses;
 using ReadilyAPI.Implementation.UseCases.Commands.Publishers;
 using ReadilyAPI.Implementation.UseCases.Commands.Reviews;
 using ReadilyAPI.Implementation.UseCases.Commands.Roles;
+using ReadilyAPI.Implementation.UseCases.Commands.Shop;
 using ReadilyAPI.Implementation.UseCases.Commands.Users;
 using ReadilyAPI.Implementation.UseCases.Commands.Wishlist;
 using ReadilyAPI.Implementation.UseCases.Queries;
@@ -50,6 +52,7 @@ using ReadilyAPI.Implementation.Validators.OrderStatus;
 using ReadilyAPI.Implementation.Validators.Publisher;
 using ReadilyAPI.Implementation.Validators.Reviews;
 using ReadilyAPI.Implementation.Validators.Role;
+using ReadilyAPI.Implementation.Validators.Shop;
 using ReadilyAPI.Implementation.Validators.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -249,6 +252,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteMessageCommand, EfDeleteMessageCommand>();
             services.AddTransient<ICreateWishlistCommand, EfCreateWishlistCommand>();
             services.AddTransient<IDeleteWishlistCommand, EfDeleteWishlistCommand>();
+            services.AddTransient<ICreateCartCommand, EfCreateCartCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -300,6 +304,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<UpdateCommentValidator>();
             services.AddTransient<CreateMessageValidator>();
             services.AddTransient<CreateWishlistValidator>();
+            services.AddTransient<CreateCartValidator>();
         }
     }
 }
