@@ -278,6 +278,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetCommentsQuery, EfGetCommentsQuery>();
             services.AddTransient<IGetMessagesQuery, EfGetMessagesQuery>();
             services.AddTransient<IGetWishlistQuery, EfGetWishlistsQuery>();
+            services.AddTransient<IFindCartQuery, EfFindCartQuery>();
         }
 
         public static void AddValidators(this IServiceCollection services)
