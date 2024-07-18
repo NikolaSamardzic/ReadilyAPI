@@ -253,6 +253,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<ICreateWishlistCommand, EfCreateWishlistCommand>();
             services.AddTransient<IDeleteWishlistCommand, EfDeleteWishlistCommand>();
             services.AddTransient<ICreateCartCommand, EfCreateCartCommand>();
+            services.AddTransient<ISumbitOrderCommand, EfSubmitOrderCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)
@@ -306,6 +307,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<CreateMessageValidator>();
             services.AddTransient<CreateWishlistValidator>();
             services.AddTransient<CreateCartValidator>();
+            services.AddTransient<SubmitOrderValidator>();
         }
     }
 }

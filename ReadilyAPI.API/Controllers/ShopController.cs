@@ -29,9 +29,20 @@ namespace ReadilyAPI.API.Controllers
 
         // POST api/<ShopController>
         [HttpPost("cart")]
-        public void Post([FromBody] CreateCartDto dto, ICreateCartCommand command)
+        public IActionResult Post([FromBody] CreateCartDto dto, ICreateCartCommand command)
         {
             _commandHandler.HandleCommand(command, dto);
+
+            return NoContent();
+        }
+
+        // POST api/<ShopController>
+        [HttpPost("submit")]
+        public IActionResult Submit([FromBody] SubmitOrderDto dto, ISumbitOrderCommand command)
+        {
+            _commandHandler.HandleCommand(command, dto);
+
+            return NoContent();
         }
     }
 }
