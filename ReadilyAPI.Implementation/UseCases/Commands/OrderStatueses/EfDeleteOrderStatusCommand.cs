@@ -16,7 +16,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
         {
         }
 
-        public int Id => 20;
+        public int Id => 21;
 
         public string Name => "Delete Order Status";
 

@@ -34,11 +34,11 @@ namespace ReadilyAPI.API.Middleware
                 await context.Response.WriteAsJsonAsync(errors);
             }
             catch (UnauthorizedException ex) {
+                context.Response.StatusCode = 401;
                 await context.Response.WriteAsJsonAsync(new
                 {
                     message = ex.Message
                 });
-                context.Response.StatusCode = 401;
             }
             catch (EntityReferencedException ex)
             {

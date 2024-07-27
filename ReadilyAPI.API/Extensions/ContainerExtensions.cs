@@ -12,6 +12,7 @@ using ReadilyAPI.Application.Logging;
 using ReadilyAPI.Application.Notification;
 using ReadilyAPI.Application.UseCaseHandling.Command;
 using ReadilyAPI.Application.UseCaseHandling.Query;
+using ReadilyAPI.Application.UseCases.Commands;
 using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.Commands.Comments;
@@ -29,6 +30,7 @@ using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
 using ReadilyAPI.Implementation.Notification;
+using ReadilyAPI.Implementation.UseCases.Commands;
 using ReadilyAPI.Implementation.UseCases.Commands.Books;
 using ReadilyAPI.Implementation.UseCases.Commands.Categories;
 using ReadilyAPI.Implementation.UseCases.Commands.Comments;
@@ -254,6 +256,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IDeleteWishlistCommand, EfDeleteWishlistCommand>();
             services.AddTransient<ICreateCartCommand, EfCreateCartCommand>();
             services.AddTransient<ISumbitOrderCommand, EfSubmitOrderCommand>();
+            services.AddTransient<IDatabaseSeedCommand, EfDatabaseSeedCommand>();
         }
 
         public static void AddQueries(this IServiceCollection services)

@@ -76,7 +76,7 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Biography)
-                .WithOne()
+                .WithOne(x => x.User)
                 .HasForeignKey<Biography>(x => x.UserId)
                 .IsRequired();
 

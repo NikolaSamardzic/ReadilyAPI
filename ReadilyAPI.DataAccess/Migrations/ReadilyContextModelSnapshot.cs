@@ -135,8 +135,7 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ImageId")
                         .HasColumnType("int");
@@ -258,8 +257,8 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
@@ -356,8 +355,8 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -577,8 +576,8 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -646,8 +645,8 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -723,8 +722,8 @@ namespace ReadilyAPI.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -888,11 +887,13 @@ namespace ReadilyAPI.DataAccess.Migrations
 
             modelBuilder.Entity("ReadilyAPI.Domain.Biography", b =>
                 {
-                    b.HasOne("ReadilyAPI.Domain.User", null)
+                    b.HasOne("ReadilyAPI.Domain.User", "User")
                         .WithOne("Biography")
                         .HasForeignKey("ReadilyAPI.Domain.Biography", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ReadilyAPI.Domain.Book", b =>
@@ -946,7 +947,7 @@ namespace ReadilyAPI.DataAccess.Migrations
                     b.HasOne("ReadilyAPI.Domain.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ReadilyAPI.Domain.Order", "Order")
@@ -1149,10 +1150,10 @@ namespace ReadilyAPI.DataAccess.Migrations
 
             modelBuilder.Entity("ReadilyAPI.Domain.Wishlist", b =>
                 {
-                    b.HasOne("ReadilyAPI.Domain.Book", null)
+                    b.HasOne("ReadilyAPI.Domain.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ReadilyAPI.Domain.User", null)
@@ -1160,6 +1161,8 @@ namespace ReadilyAPI.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("ReadilyAPI.Domain.Book", b =>
