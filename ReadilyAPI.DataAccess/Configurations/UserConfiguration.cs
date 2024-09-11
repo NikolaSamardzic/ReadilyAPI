@@ -70,19 +70,22 @@ namespace ReadilyAPI.DataAccess.Configurations
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(x=>x.Role)
-                .WithMany()
+                .WithMany(x=>x.Users)
                 .HasForeignKey(x=>x.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Biography)
-                .WithOne()
+                .WithOne(x => x.User)
                 .HasForeignKey<Biography>(x => x.UserId)
                 .IsRequired();
 
-            builder.HasMany(x=>x.Categories)
-                .WithMany()
+            builder.HasMany(x => x.Categories)
+                .WithMany(x => x.UserCategories)
                 .UsingEntity<UserCategory>();
+
+            builder.HasMany(x => x.UserUseCases)
+                .WithOne(x => x.User);
             #endregion
         }
     }

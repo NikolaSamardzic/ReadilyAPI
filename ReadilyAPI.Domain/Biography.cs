@@ -10,7 +10,11 @@ namespace ReadilyAPI.Domain
     {
         #region Properties
         public string Text;
-        public int UserId; 
+        public int UserId;
+        #endregion
+
+        #region Navigation
+        public virtual User User { get; set; }
         #endregion
     }
 }

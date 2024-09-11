@@ -16,7 +16,7 @@ namespace ReadilyAPI.DataAccess.Configurations
             #region Properties
             builder.Property(x => x.Title).IsRequired().HasMaxLength(100);
 
-            builder.Property(x => x.Description).IsRequired().HasMaxLength(1000);
+            builder.Property(x => x.Description).IsRequired();
 
             builder.Property(x => x.PageCount).IsRequired();
 
@@ -48,6 +48,18 @@ namespace ReadilyAPI.DataAccess.Configurations
             
             builder.HasOne(x=>x.Image)
                 .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.BookCategories)
+                .WithOne(x => x.Book)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany<Wishlist>()
+                .WithOne(x=>x.Book)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany<BookOrder>()
+                .WithOne(x => x.Book)
                 .OnDelete(DeleteBehavior.Restrict);
             #endregion
         }

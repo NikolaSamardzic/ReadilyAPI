@@ -20,8 +20,8 @@ namespace ReadilyAPI.Domain
         #region Navigation
         public virtual User User { get; set; }
         public virtual OrderStatus Status { get; set; }
-        public virtual Address? Address { get; set; }
-        public virtual DeliveryType? DeliveryType { get; set; }
+        public virtual Address Address { get; set; }
+        public virtual DeliveryType DeliveryType { get; set; }
         public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
         #endregion
     }

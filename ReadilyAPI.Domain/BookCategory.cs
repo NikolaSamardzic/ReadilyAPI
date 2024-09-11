@@ -12,5 +12,8 @@ namespace ReadilyAPI.Domain
         public int CategoryId { get; set; }
         public int BookId { get; set; }
         #endregion
+
+        public virtual Book Book { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

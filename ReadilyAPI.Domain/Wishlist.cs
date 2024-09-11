@@ -12,5 +12,7 @@ namespace ReadilyAPI.Domain
         public int BookId { get; set; }
         public int UserId { get; set; }
         #endregion
+
+        public virtual Book Book { get; set; }
     }
 }

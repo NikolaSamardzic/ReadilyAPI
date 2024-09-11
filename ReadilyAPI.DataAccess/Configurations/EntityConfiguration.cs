@@ -37,7 +37,7 @@ namespace ReadilyAPI.DataAccess.Configurations
 
             builder.Property(x => x.Name)
                    .IsRequired()
-                   .HasMaxLength(30);
+                   .HasMaxLength(50);
 
             builder.HasIndex(x => x.Name)
                    .IsUnique();
