@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetRolesQuery() { }
+
         public int Id => 11;
 
         public string Name => "Get Roles";

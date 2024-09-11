@@ -27,6 +27,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Messages
             _emailService = emailService;
         }
 
+        private EfCreateMessageCommand() { }
+
         public int Id => 58;
 
         public string Name => "Create Message";

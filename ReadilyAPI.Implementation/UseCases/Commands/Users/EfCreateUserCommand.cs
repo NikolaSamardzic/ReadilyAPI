@@ -26,6 +26,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             _emailService = emailService;
         }
 
+        private EfCreateUserCommand() { }
+
         public int Id => 34;
 
         public string Name => "Create User";

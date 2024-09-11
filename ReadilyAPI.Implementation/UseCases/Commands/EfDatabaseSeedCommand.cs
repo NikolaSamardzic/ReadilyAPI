@@ -20,6 +20,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands
         {
         }
 
+        private EfDatabaseSeedCommand() { }
+
         public int Id => 67;
 
         public string Name => "Database Seed";

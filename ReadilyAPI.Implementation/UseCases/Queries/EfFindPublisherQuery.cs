@@ -20,6 +20,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             _context = context;
         }
 
+        private EfFindPublisherQuery() { }
+
         public int Id => 16;
 
         public string Name => "Find Publisher";

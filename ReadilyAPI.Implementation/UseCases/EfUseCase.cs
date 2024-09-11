@@ -15,5 +15,7 @@ namespace ReadilyAPI.Implementation.UseCases
         {
             Context = context;
         }
+
+        protected EfUseCase() { }
     }
 }

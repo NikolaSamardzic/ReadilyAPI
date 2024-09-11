@@ -26,6 +26,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
            _validator = validator;
         }
 
+        private EfUpdateCategoryCommand() { }
+
         public int Id => 3;
 
         public string Name => "Update Category";

@@ -17,6 +17,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Messages
         {
         }
 
+        private EfDeleteMessageCommand() { }
+
         public int Id => 59;
 
         public string Name => "Delete Message";

@@ -16,6 +16,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
         {
         }
 
+        private EfDeleteOrderStatusCommand() { }
+
         public int Id => 21;
 
         public string Name => "Delete Order Status";

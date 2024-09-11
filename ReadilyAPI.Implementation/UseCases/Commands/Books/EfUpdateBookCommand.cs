@@ -24,6 +24,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
             _validator = validator;
         }
 
+        private EfUpdateBookCommand() { }
+
         public int Id => 46;
 
         public string Name => "Update Book Use Case";

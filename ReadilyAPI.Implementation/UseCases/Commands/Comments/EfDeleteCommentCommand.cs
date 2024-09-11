@@ -19,6 +19,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
             _actor = actor;
         }
 
+        private EfDeleteCommentCommand() { }
+
         public int Id => 55;
 
         public string Name => "Delete Comment";

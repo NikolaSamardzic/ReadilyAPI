@@ -25,6 +25,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Reviews
             _validator = validator;
         }
 
+        private EfUpdateReviewCommand() { }
+
         public int Id => 52;
 
         public string Name => "Update Review";

@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetLogEntriesQuery() { }
+
         public int Id => 31;
 
         public string Name => "Get Log Entries";

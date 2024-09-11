@@ -17,6 +17,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
         {
         }
 
+        private EfDeleteRoleCommand() { }
+
         public int Id => 9;
 
         public string Name => "Delete Role";

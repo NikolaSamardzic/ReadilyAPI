@@ -20,6 +20,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
             _validator = validator;
         }
 
+        private EfCreateRoleCommand() { }
+
         public int Id => 7;
 
         public string Name => "Create Role";

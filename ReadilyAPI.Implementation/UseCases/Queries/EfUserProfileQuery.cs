@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfUserProfileQuery() { }
+
         public int Id => 38;
 
         public string Name => "Find User Profile";

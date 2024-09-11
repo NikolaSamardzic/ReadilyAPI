@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetCategoriesQuery() { }
+
         public int Id => 6;
 
         public string Name => "Get Categories";

@@ -21,9 +21,11 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             _validator = validator;
         }
 
+        private EfCreateUserFavoriteCategoriesCommand() { }
+
         public int Id => 43;
 
-        public string Name => "Create User Favorite Commands";
+        public string Name => "Create User Favorite Categories";
 
         public void Execute(CreateUserFavoriteCategoriesDto data)
         {

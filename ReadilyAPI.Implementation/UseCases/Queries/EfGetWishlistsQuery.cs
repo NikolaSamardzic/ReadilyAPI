@@ -22,6 +22,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             _actor = actor;
         }
 
+        private EfGetWishlistsQuery() { }
+
         public int Id => 63;
 
         public string Name => "Get Wishlists";

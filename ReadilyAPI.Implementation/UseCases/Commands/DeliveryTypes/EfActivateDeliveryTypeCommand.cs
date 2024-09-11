@@ -16,6 +16,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
         {
         }
 
+        private EfActivateDeliveryTypeCommand() { }
+
         public int Id => 30;
 
         public string Name => "Activate Delivery Type";

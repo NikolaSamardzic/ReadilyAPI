@@ -20,6 +20,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
             _validator = validator;
         }
 
+        private EfCreatePublisherCommand() { }
+
         public int Id => 13;
 
         public string Name => "Create Publisher";

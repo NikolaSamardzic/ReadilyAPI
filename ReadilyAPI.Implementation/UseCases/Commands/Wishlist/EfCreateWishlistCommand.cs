@@ -25,6 +25,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
             _validator = validator;
         }
 
+        private EfCreateWishlistCommand() { }
+
         public int Id => 61;
 
         public string Name => "Create Wishlist";

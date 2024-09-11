@@ -24,6 +24,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Reviews
             _actor = actor;
         }
 
+        private EfCreateReviewCommand() { }
+
         public int Id => 51;
 
         public string Name => "Create Review";

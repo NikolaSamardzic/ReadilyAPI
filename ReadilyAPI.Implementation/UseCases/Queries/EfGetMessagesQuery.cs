@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetMessagesQuery() { }
+
         public int Id => 60;
 
         public string Name => "Get Messages";

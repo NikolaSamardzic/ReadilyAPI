@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             _validator = validator;
         }
 
+        private EfCreateUserUseCaseCommand() { }
+
         public int Id => 44;
 
         public string Name => "Create User Use Case";

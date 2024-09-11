@@ -19,6 +19,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetOrderStatusesQuery() { }
+
         public int Id => 23;
 
         public string Name => "Get Order Statuses";

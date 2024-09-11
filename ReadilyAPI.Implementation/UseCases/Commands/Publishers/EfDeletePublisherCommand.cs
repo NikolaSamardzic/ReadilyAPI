@@ -17,6 +17,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
         {
         }
 
+        private EfDeletePublisherCommand() { }
+
         public int Id => 15;
 
         public string Name => "Delete Publisher";

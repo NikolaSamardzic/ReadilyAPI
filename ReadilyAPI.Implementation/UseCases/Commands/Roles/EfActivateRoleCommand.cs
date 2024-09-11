@@ -16,6 +16,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
         {
         }
 
+        private EfActivateRoleCommand() { }
+
         public int Id => 12;
 
         public string Name => "Activate Role";

@@ -19,6 +19,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetCommentsQuery() { }
+
         public int Id => 57;
 
         public string Name => "Get Comments";

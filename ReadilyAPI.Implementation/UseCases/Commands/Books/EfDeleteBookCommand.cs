@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
             _actor = actor;
         }
 
+        private EfDeleteBookCommand() { }
+
         public int Id => 47;
 
         public string Name => "Delete Book Use Case";

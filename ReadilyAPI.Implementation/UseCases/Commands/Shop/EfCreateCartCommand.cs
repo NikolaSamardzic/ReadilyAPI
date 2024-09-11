@@ -27,6 +27,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
             _validator = validator;
         }
 
+        private EfCreateCartCommand() { }
+
         public int Id => 64;
 
         public string Name => "Create Cart";

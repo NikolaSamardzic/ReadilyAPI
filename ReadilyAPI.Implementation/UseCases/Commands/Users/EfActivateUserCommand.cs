@@ -15,6 +15,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
         }
 
+        private EfActivateUserCommand() { }
+
         public int Id => 42;
 
         public string Name => "Activate User";

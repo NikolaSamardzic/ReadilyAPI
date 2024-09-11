@@ -15,6 +15,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
         }
 
+        private EfBanUserCommand() { }
+
         public int Id => 40;
 
         public string Name => "Ban User";

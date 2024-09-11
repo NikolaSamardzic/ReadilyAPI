@@ -26,6 +26,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
             _validator = validator;
         }
 
+        private EfCreateBookCommand() { }
+
         public int Id => 45;
 
         public string Name => "Create Book";

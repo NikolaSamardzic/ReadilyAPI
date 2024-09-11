@@ -24,6 +24,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
             _validator = validator;
         }
 
+        private EfUpdateRoleCommand() { }
+
         public int Id => 8;
 
         public string Name => "Update Role";

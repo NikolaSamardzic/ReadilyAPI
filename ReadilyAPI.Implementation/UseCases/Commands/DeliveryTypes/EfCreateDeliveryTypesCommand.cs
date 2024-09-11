@@ -20,6 +20,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
             _validator = validator;
         }
 
+        private EfCreateDeliveryTypesCommand() { }
+
         public int Id => 24;
 
         public string Name => "Create Delivery Type";

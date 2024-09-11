@@ -16,6 +16,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
         {
         }
 
+        private EfActivatePublisherCommand() { }
+
         public int Id => 18;
 
         public string Name => "Activate Publisher";

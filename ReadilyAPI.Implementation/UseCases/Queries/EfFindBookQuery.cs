@@ -17,6 +17,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfFindBookQuery() { }
+
         public int Id => 49;
 
         public string Name => "Find Book Use Case";

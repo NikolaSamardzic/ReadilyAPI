@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetPublishersQuery() { }
+
         public int Id => 17;
 
         public string Name => "Get Publishers";

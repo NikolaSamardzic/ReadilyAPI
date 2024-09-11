@@ -19,6 +19,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
             _actor = actor;
         }
 
+        private EfActivateBookCommand() { }
+
         public int Id => 48;
 
         public string Name => "Activate Book Command";

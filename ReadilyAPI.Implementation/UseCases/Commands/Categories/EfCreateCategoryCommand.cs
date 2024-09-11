@@ -28,6 +28,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
             this.validator = validator;
         }
 
+        private EfCreateCategoryCommand() { }
+
         public void Execute(CreateCategoryDto data)
         {
             validator.ValidateAndThrow(data);

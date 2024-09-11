@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
             _actor = actor;
         }
 
+        private EfDeleteWishlistCommand() { }
+
         public int Id => 62;
 
         public string Name => "Delete Wishlist";

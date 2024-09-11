@@ -20,6 +20,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
             _context = context;
         }
 
+        private EfActivateCategoryCommand() { }
+
         public int Id => 4;
 
         public string Name => "Activate Category";

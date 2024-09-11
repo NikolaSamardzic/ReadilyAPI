@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
             _validator = validator;
         }
 
+        private EfUpdateDeliveryTypeCommand() { }
+
         public int Id => 26;
 
         public string Name => "Update Delivery Type";

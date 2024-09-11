@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
             _validator = validator;
         }
 
+        private EfUpdateOrderStatusesCommand() { }
+
         public int Id => 20;
 
         public string Name => "Update Order Status";

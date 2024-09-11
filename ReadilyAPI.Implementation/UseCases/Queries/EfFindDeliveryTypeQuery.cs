@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfFindDeliveryTypeQuery() { }
+
         public int Id => 28;
 
         public string Name => "Find Delivery Type";

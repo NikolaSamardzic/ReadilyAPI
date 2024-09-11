@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfGetUsersQuery() { }
+
         public int Id => 39;
 
         public string Name => "Get Users";

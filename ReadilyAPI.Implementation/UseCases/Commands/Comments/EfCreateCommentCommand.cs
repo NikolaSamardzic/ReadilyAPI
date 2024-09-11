@@ -23,6 +23,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
             _validator = validator;
         }
 
+        private EfCreateCommentCommand() { }
+
         public int Id => 53;
 
         public string Name => "Create Comment";

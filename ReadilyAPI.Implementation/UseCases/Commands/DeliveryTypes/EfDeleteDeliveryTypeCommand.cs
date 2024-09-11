@@ -15,6 +15,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
         {
         }
 
+        private EfDeleteDeliveryTypeCommand() { }
+
         public int Id => 27;
 
         public string Name => "Delete Delivery Type";

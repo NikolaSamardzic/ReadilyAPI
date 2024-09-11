@@ -23,6 +23,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             _actor = actor;
         }
 
+        private EfFindCartQuery() { }
+
         public int Id => 65;
 
         public string Name => "Find Cart";

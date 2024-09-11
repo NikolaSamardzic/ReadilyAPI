@@ -17,6 +17,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
         {
         }
 
+        private EfDeleteCategoryCommand() { }
+
         public int Id => 2;
 
         public string Name => "Delete Category";

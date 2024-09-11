@@ -25,6 +25,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
             _validator = validator;
         }
 
+        private EfSubmitOrderCommand() { }
+
         public int Id => 66;
 
         public string Name => "Submit Order";

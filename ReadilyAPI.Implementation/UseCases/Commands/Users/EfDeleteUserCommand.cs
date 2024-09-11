@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             _actor = actor;
         }
 
+        private EfDeleteUserCommand() { }
+
         public int Id => 36;
 
         public string Name => "Delete User";

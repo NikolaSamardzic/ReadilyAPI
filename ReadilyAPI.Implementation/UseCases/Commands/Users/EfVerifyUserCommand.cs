@@ -17,6 +17,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
         }
 
+        private EfVerifyUserCommand() { }
+
         public int Id => 35;
 
         public string Name => "Verify User";

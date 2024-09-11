@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfFindCategoryQuery() { }
+
         public int Id => 5;
 
         public string Name => "Find Category";

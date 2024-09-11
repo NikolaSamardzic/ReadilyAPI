@@ -18,6 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfFindCommentQuery() { }
+
         public int Id => 56;
 
         public string Name => "Find Comment";

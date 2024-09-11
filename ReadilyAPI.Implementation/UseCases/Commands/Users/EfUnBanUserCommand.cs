@@ -15,6 +15,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
         }
 
+        private EfUnBanUserCommand() { }
+
         public int Id => 41;
 
         public string Name => "Unban User";

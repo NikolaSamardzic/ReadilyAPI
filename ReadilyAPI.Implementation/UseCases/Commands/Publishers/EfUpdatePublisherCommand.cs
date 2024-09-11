@@ -21,6 +21,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
             _validator = validator;
         }
 
+        private EfUpdatePublisherCommand() { }
+
         public int Id => 14;
 
         public string Name => "Update Publisher";

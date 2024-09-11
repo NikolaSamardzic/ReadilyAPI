@@ -25,6 +25,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             _validator = userValidator;
         }
 
+        private EfUpdateUserCommand() { }
+
         public int Id => 37;
 
         public string Name => "Update User";

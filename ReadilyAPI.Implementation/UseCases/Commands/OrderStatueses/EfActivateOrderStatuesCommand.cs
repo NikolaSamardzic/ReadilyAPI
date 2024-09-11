@@ -16,6 +16,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
         {
         }
 
+        private EfActivateOrderStatuesCommand() { }
+
         public int Id => 25;
 
         public string Name => "Activate Order Status";

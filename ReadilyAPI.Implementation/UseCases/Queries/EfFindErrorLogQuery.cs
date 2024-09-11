@@ -16,6 +16,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
         }
 
+        private EfFindErrorLogQuery() { }
+
         public int Id => 33;
 
         public string Name => "Find Error Log";
