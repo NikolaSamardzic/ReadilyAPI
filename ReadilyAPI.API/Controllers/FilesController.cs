@@ -14,6 +14,7 @@ namespace ReadilyAPI.API.Controllers
             ".jpg", ".jpeg", ".png"
         };
 
+        // GET api/<FilesController>
         [HttpGet("{fileName}")]
         public IActionResult GetFile(string fileName)
         {

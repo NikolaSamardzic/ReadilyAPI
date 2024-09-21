@@ -59,6 +59,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // PATCH api/<DeliveryTypesController>/5/activate
         [HttpPatch("{id}/activate")]
         public IActionResult Activate(int id, IActivateDeliveryTypeCommand command)
         {

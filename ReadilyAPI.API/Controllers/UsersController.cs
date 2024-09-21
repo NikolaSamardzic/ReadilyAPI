@@ -29,6 +29,7 @@ namespace ReadilyAPI.API.Controllers
         public IActionResult Get([FromQuery] UserSearch search, IGetUsersQuery query)
         => Ok(_queryHandler.HandleQuery(query, search));
 
+        // GET: api/<UsersController>/profile
         [HttpGet("profile")]
         public IActionResult Get(IApplicationActor actor, IUserProfileQuery query)
         {
@@ -60,6 +61,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // GET: api/<UsersController>/5/verify
         [HttpGet("{id}/verify")]
         public IActionResult Verify(string id, IVerifyUserCommand command)
         {
@@ -67,6 +69,7 @@ namespace ReadilyAPI.API.Controllers
             return Ok(new {message = "User is verified."});
         }
 
+        // PATCH: api/<UsersController>/5/ban
         [HttpPatch("{id}/ban")]
         public IActionResult Ban(int id, IBanUserCommand command)
         {
@@ -74,6 +77,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // PATCH: api/<UsersController>/5/unban
         [HttpPatch("{id}/unban")]
         public IActionResult Unban(int id, IUnBanUserCommand command)
         {
@@ -81,6 +85,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // POST: api/<UsersController>/favoriteCategories
         [HttpPost("favoriteCategories")]
         public IActionResult FavoriteCategories([FromBody] CreateUserFavoriteCategoriesDto dto, ICreateUserFavoriteCategoriesCommand command, IApplicationActor actor)
         {
@@ -90,6 +95,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // POST: api/<UsersController>
         [HttpPost("userUseCase")]
         public IActionResult UseUserCase([FromBody] CreateUserUseCaseDto dto, ICreateUserUseCaseCommand command)
         {

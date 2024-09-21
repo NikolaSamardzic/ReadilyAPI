@@ -24,10 +24,12 @@ namespace ReadilyAPI.API.Controllers
         public IActionResult Entries([FromQuery] LogEntriesSearch search, IGetLogEntriesQuery query)
         => Ok(_queryHandler.HandleQuery(query,search));
 
+        // GET: api/<AuditLogsController>
         [HttpGet("errors")]
         public IActionResult Errors([FromQuery] ErrorLogSearch search, IGetErrorLogsQuery query)
         => Ok(_queryHandler.HandleQuery(query, search));
-        
+
+        // GET: api/<AuditLogsController>/5
         [HttpGet("errors/{id}")]
         public IActionResult ErrorsFind(Guid id, IFindErrorLogQuery query)
         => Ok(_queryHandler.HandleQuery(query, id));

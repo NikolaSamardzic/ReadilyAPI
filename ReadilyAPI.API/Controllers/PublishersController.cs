@@ -61,6 +61,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // PATCH api/<PublishersController>/5/activate
         [HttpPatch("{id}/activate")]
         public IActionResult Activate(int id, [FromServices] IActivatePublisherCommand command)
         {
