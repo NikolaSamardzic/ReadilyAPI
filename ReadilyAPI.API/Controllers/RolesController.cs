@@ -59,6 +59,7 @@ namespace ReadilyAPI.API.Controllers
             return StatusCode(204);
         }
 
+        // PATCH api/<RolesController>/5
         [HttpPatch("{id}/activate")]
         public IActionResult Activate(int id, IActivateRoleCommand command)
         {

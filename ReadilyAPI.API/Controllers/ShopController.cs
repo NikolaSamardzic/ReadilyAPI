@@ -22,7 +22,7 @@ namespace ReadilyAPI.API.Controllers
             _queryHandler = queryHandler;
         }
 
-        // GET api/<ShopController>/5
+        // GET api/<ShopController>/cart/5
         [HttpGet("cart/{id}")]
         public IActionResult Get(int id, IFindCartQuery query)
             => Ok(_queryHandler.HandleQuery(query, id));
@@ -36,7 +36,7 @@ namespace ReadilyAPI.API.Controllers
             return NoContent();
         }
 
-        // POST api/<ShopController>
+        // POST api/<ShopController>/submit
         [HttpPost("submit")]
         public IActionResult Submit([FromBody] SubmitOrderDto dto, ISumbitOrderCommand command)
         {
