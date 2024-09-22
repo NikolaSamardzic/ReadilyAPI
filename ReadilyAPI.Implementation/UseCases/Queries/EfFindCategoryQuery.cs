@@ -40,7 +40,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
             {
                 Id = category.Id,
                 Name = category.Name,
-                Children = category.Children.Select(x => new CategoryDto {
+                Children = category.Children.
+                Where(x => x.IsActive).Select(x => new CategoryDto {
                     Id = x.Id,
                     Name = x.Name,
                     ParentId = x.ParentId,
