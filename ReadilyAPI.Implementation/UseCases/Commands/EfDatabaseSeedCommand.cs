@@ -1096,7 +1096,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands
             var avatarDefault = new Image
             {
                 Alt = "Avatar",
-                Src = "defoult.jpg"
+                Src = "default.jpg"
             };
 
             Context.Images.Add(avatarDefault);
