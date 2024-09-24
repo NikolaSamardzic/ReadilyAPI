@@ -32,7 +32,7 @@ namespace ReadilyAPI.Implementation.UseCases
                     result.Add(new UseCaseDto { Id = currentType.Id, Name = currentType.Name.ToLower() });
                 }
 
-                return result;
+                return result.OrderBy(x => x.Id);
             }
         }
 

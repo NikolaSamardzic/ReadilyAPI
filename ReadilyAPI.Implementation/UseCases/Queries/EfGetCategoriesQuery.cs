@@ -55,6 +55,30 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             query = query.Skip(skip).Take(perPage);
 
+            if (!search.ParentId.HasValue)
+            {
+                return new PagedResponse<CategoryDto>
+                {
+                    CurrentPage = page,
+                    Items = query
+                .Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    ParentId = x.ParentId,
+                    Children = x.Children.Where(x => x.IsActive).Select(c => new CategoryDto
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        ParentId = c.ParentId,
+                        Children = new List<CategoryDto>() { }
+                    })
+                }).ToList(),
+                    ItemsPerPage = perPage,
+                    TotalCount = totalCount,
+                };
+            }
+
             return new PagedResponse<CategoryDto> {
                 CurrentPage = page,
                 Items = query
@@ -64,7 +88,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                     Id = x.Id,
                     Name = x.Name,
                     ParentId = x.ParentId,
-                    Children = x.Children.Select(c => new CategoryDto
+                    Children = x.Children.Where(x => x.IsActive).Select(c => new CategoryDto
                     {
                         Id = c.Id,
                         Name = c.Name,
