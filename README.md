@@ -1,5 +1,7 @@
 # **ReadilyAPI - Online Bookstore API**
 
+>**Documentation**: For detailed project documentation, please visit the [Wiki](https://github.com/NikolaSamardzic/ReadilyAPI/wiki) page.
+
 ## **Installation Instructions**
 
 Follow these steps to set up and run the project on your local machine:
