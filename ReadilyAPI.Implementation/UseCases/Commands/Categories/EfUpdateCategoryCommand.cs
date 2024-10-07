@@ -1,9 +1,11 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.DTO.Category;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Category;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -20,10 +22,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
     {
         private readonly UpdateCategoryValidator _validator;
 
-        public EfUpdateCategoryCommand(ReadilyContext context, UpdateCategoryValidator validator)
+        private readonly IMapper _mapper;
+
+        public EfUpdateCategoryCommand(ReadilyContext context, UpdateCategoryValidator validator, IMapper mapper)
             : base(context)
         {
-           _validator = validator;
+            _validator = validator;
+            _mapper = mapper;
         }
 
         private EfUpdateCategoryCommand() { }
@@ -34,7 +39,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
         public void Execute(UpdateCategoryDto data)
         {
-            var category = Context.Categories.Include(x=>x.Parent).Include(x=>x.Children).FirstOrDefault(x=> x.Id == data.Id && x.IsActive);
+            var category = Context.Categories.Include(x => x.Parent).Include(x => x.Children).FirstOrDefault(x => x.Id == data.Id && x.IsActive);
 
             if (category == null)
             {
@@ -43,16 +48,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
             _validator.ValidateAndThrow(data);
 
-            category.Name = data.Name;
+            _mapper.Map(data, category);
 
             var children = Context.Categories.Where(c => data.ChildrenIds.Contains(c.Id)).ToList();
             category.Children = children;
 
-            var parent = Context.Categories.FirstOrDefault(category => category.Id == data.ParentId);
-
-            category.Parent = parent;
-
-            if (!string.IsNullOrEmpty(data.Image))
+            if (Path.Exists(Path.Combine("wwwroot", "temp", data.Image)))
             {
                 category.Image = new Domain.Image
                 {
@@ -63,7 +64,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
                 var tempFile = Path.Combine("wwwroot", "temp", data.Image);
                 var destFile = Path.Combine("wwwroot", "images", "categories", data.Image);
 
-                using (var originalImage = Image.Load(tempFile))
+                using (var originalImage = SixLabors.ImageSharp.Image.Load(tempFile))
                 {
                     var smallerImage = ResizeImage(originalImage, height: 200);
                     smallerImage.Save(destFile);
@@ -72,10 +73,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
                 System.IO.File.Delete(tempFile);
             }
 
+            Context.Categories.Update(category);
+
             Context.SaveChanges();
         }
 
-        private Image ResizeImage(Image originalImage, int height)
+        private SixLabors.ImageSharp.Image ResizeImage(SixLabors.ImageSharp.Image originalImage, int height)
         {
             var ratio = (double)height / originalImage.Height;
             var width = (int)(originalImage.Width * ratio);

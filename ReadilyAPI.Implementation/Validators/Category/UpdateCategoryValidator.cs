@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.Validators.Category
 {
@@ -51,17 +52,23 @@ namespace ReadilyAPI.Implementation.Validators.Category
                 .Must((dto,name) => !context.Categories.Any(c => c.Name == name && c.Id != dto.Id))
                 .WithMessage("Category name is in use.");
 
-            When(x => !string.IsNullOrEmpty(x.Image), () =>
-            {
-                RuleFor(x => x.Image).Must((x, fileName) =>
+            RuleFor(x => x.Image)
+                .NotNull()
+                .WithMessage("Image is required.")
+                .Must((x, fileName) =>
                 {
-                    var path = Path.Combine("wwwroot", "temp", fileName);
+                    var tempPath = Path.Combine("wwwroot", "temp", fileName);
 
-                    var exists = Path.Exists(path);
+                    var permPath = Path.Combine("wwwroot", "images", "categories", fileName);
 
-                    return exists;
-                }).WithMessage("File doesn't exist.");
-            });
+                    var tempExists = Path.Exists(tempPath);
+
+                    var permExists = Path.Exists(permPath);
+
+                    if (tempExists || permExists) return true;
+                    return false;
+                })
+                .WithMessage("File doesn't exist.");
         }
 
         private bool ValidateCategoryDepth(int? parentId)

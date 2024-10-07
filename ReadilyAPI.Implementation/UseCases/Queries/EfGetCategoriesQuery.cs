@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Category;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetCategoriesQuery : EfUseCase, IGetCategoriesQuery
     {
-        public EfGetCategoriesQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetCategoriesQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            this._mapper = mapper;
         }
 
         private EfGetCategoriesQuery() { }
@@ -28,7 +32,8 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
             var query = Context.Categories
                 .Include(x=>x.Parent)
-                
+                .ThenInclude(x => x.Image)
+                .Include(x => x.Image)
                 .Where(x=>x.IsActive == search.IsActive)
                 .AsQueryable();
 
@@ -53,49 +58,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
-            if (!search.ParentId.HasValue)
+            return new PagedResponse<CategoryDto>
             {
-                return new PagedResponse<CategoryDto>
-                {
-                    CurrentPage = page,
-                    Items = query
-                .Select(x => new CategoryDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    ParentId = x.ParentId,
-                    Children = x.Children.Where(x => x.IsActive).Select(c => new CategoryDto
-                    {
-                        Id = c.Id,
-                        Name = c.Name,
-                        ParentId = c.ParentId,
-                        Children = new List<CategoryDto>() { }
-                    })
-                }).ToList(),
-                    ItemsPerPage = perPage,
-                    TotalCount = totalCount,
-                };
-            }
-
-            return new PagedResponse<CategoryDto> {
                 CurrentPage = page,
-                Items = query
-                .Where(x=>x.ParentId == null)
-                .Select(x => new CategoryDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    ParentId = x.ParentId,
-                    Children = x.Children.Where(x => x.IsActive).Select(c => new CategoryDto
-                    {
-                        Id = c.Id,
-                        Name = c.Name,
-                        ParentId = c.ParentId,
-                        Children = new List<CategoryDto>() { }
-                    })
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<CategoryDto>>(result),
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
             };

@@ -20,6 +20,7 @@ using ReadilyAPI.DataAccess;
 using ReadilyAPI.Implementation;
 using ReadilyAPI.Implementation.Logging;
 using ReadilyAPI.Implementation.Uploads;
+using ReadilyAPI.Implementation.UseCases;
 using ReadilyAPI.Implementation.UseCases.Commands;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -57,6 +58,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddTransient<ReadilyContext>();
+builder.Services.AddAutoMapper(typeof(UseCaseInfo).Assembly);
 
 var appSettings = new AppSettings();
 builder.Configuration.Bind(appSettings);

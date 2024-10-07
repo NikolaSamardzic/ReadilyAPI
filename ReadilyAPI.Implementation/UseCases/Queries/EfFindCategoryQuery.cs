@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Category;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -13,9 +14,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindCategoryQuery : EfUseCase, IFindCategoryQuery
     {
+        private readonly IMapper _mapper;
 
-        public EfFindCategoryQuery(ReadilyContext context) : base(context)
+        public EfFindCategoryQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            this._mapper = mapper;
         }
 
         private EfFindCategoryQuery() { }
@@ -27,8 +30,9 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         public CategoryDto Execute(int id)
         {
             var category = Context.Categories
-                                    .Include(x=>x.Parent)
-                                    .Include(x=>x.Children)
+                                    .Include(x => x.Parent)
+                                    .Include(x => x.Children)
+                                    .Include(x => x.Image)
                                     .FirstOrDefault(x=>x.Id == id && x.IsActive);
 
             if(category == null)
@@ -36,19 +40,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(id,nameof(Domain.Category));
             }
 
-            return new CategoryDto
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Children = category.Children.
-                Where(x => x.IsActive).Select(x => new CategoryDto {
-                    Id = x.Id,
-                    Name = x.Name,
-                    ParentId = x.ParentId,
-                    Children = []
-                }),
-                ParentId = category.ParentId,
-            };
+            return _mapper.Map<CategoryDto>(category);
         }
     }
 }

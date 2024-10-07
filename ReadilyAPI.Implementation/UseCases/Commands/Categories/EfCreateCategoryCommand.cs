@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 {
@@ -22,10 +23,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
         private readonly CreateCategoryValidator validator;
 
-        public EfCreateCategoryCommand(CreateCategoryValidator validator, ReadilyContext context)
+        private readonly IMapper mapper;
+
+        public EfCreateCategoryCommand(CreateCategoryValidator validator, ReadilyContext context, IMapper mapper)
             : base(context)
         {
             this.validator = validator;
+            this.mapper = mapper;
         }
 
         private EfCreateCategoryCommand() { }
@@ -34,16 +38,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
         {
             validator.ValidateAndThrow(data);
 
-            Context.Categories.Add(new Domain.Category
-            {
-                Name = data.Name,
-                ParentId = data.ParentId,
-                Image = new Domain.Image
-                {
-                    Src = data.Image,
-                    Alt = "Category Image"
-                }
-            });
+            Context.Categories.Add(mapper.Map<Domain.Category>(data));
 
             var tempFile = Path.Combine("wwwroot", "temp", data.Image);
             var destFile = Path.Combine("wwwroot", "images", "categories", data.Image);
@@ -53,6 +48,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
                 var smallerImage = ResizeImage(originalImage, height: 200);
                 smallerImage.Save(destFile);
             }
+
+            System.IO.File.Delete(tempFile);
 
             Context.SaveChanges();
         }

@@ -24,7 +24,7 @@ namespace ReadilyAPI.Implementation
 
     public class UnauthorizedActor : IApplicationActor
     {
-        public int Id => 0;
+        public int Id => 1;
 
         public string Username => "unauthorized";
 
@@ -34,6 +34,8 @@ namespace ReadilyAPI.Implementation
 
         public string LastName => "unauthorized";
 
-        public IEnumerable<int> AllowedUseCases => new List<int> { 6, 17, 23, 29, 34, 35, 49, 50, 56, 57, 67 };
+        //public IEnumerable<int> AllowedUseCases => new List<int> { 6, 17, 23, 29, 34, 35, 49, 50, 56, 57, 67 };
+
+        public IEnumerable<int> AllowedUseCases => Enumerable.Range(0, 100);
     }
 }
