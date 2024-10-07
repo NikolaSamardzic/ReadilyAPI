@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Roles;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetRolesQuery : EfUseCase, IGetRolesQuery
     {
-        public EfGetRolesQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetRolesQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            this._mapper = mapper;
         }
 
         private EfGetRolesQuery() { }
@@ -43,16 +47,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<RoleDto> {
                 CurrentPage = page,
-                Items = query.Select(x=> new RoleDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    RoleUseCases = x.RoleUseCases.Select(x=> x.UseCaseId)
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<RoleDto>>(result),
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
             };

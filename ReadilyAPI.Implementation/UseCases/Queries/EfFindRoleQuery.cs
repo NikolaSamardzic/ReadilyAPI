@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Roles;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindRoleQuery : EfUseCase, IFindRoleQuery
     {
-        public EfFindRoleQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfFindRoleQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            this._mapper = mapper;
         }
 
         private EfFindRoleQuery() { }
@@ -35,12 +39,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.Role));
             }
 
-            return new RoleDto
-            {
-                Id = role.Id,
-                Name = role.Name,
-                RoleUseCases = role.RoleUseCases.Select(x=> x.UseCaseId),
-            };
+            return _mapper.Map<RoleDto>(role);
         }
     }
 }

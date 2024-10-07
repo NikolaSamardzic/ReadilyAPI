@@ -1,7 +1,9 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.UseCases.Commands.Roles;
 using ReadilyAPI.Application.UseCases.DTO.Roles;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Role;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
     public class EfCreateRoleCommand : EfUseCase, ICreateRoleCommand
     {
         private readonly CreateRoleValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateRoleCommand(ReadilyContext context, CreateRoleValidator validator) : base(context)
+        public EfCreateRoleCommand(ReadilyContext context, CreateRoleValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            this._mapper = mapper;
         }
 
         private EfCreateRoleCommand() { }
@@ -30,14 +34,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
         {
             _validator.ValidateAndThrow(data);
 
-            Context.Roles.Add(new Domain.Role()
-            {
-                Name = data.Name,
-                RoleUseCases = data.RoleUseCases.Select(useCaseId => new Domain.RoleUseCase
-                {
-                    UseCaseId = useCaseId,
-                }).ToList()
-            });
+            Context.Roles.Add(_mapper.Map<Role>(data));
 
             Context.SaveChanges();
         }
