@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
@@ -15,8 +16,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetOrderStatusesQuery : EfUseCase, IGetOrderStatusQuery
     {
-        public EfGetOrderStatusesQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetOrderStatusesQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetOrderStatusesQuery() { }
@@ -54,17 +58,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<OrderStatusDto>
             {
                 CurrentPage = page,
-                Items = query.Select(x => new OrderStatusDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    OrdersCount = x.Orders.Count(),
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<OrderStatusDto>>(result),
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
             };

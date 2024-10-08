@@ -1,7 +1,9 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.OrderStatus;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
     public class EfCreateOrderStatusesCommand : EfUseCase, ICreateOrderStatusCommand
     {
         private readonly CreateOrderStatusValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateOrderStatusesCommand(ReadilyContext context, CreateOrderStatusValidator validator) : base(context)
+        public EfCreateOrderStatusesCommand(ReadilyContext context, CreateOrderStatusValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+           _mapper = mapper;
         }
 
         private EfCreateOrderStatusesCommand() { }
@@ -30,10 +34,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
         {
             _validator.ValidateAndThrow(data);
 
-            Context.OrderStatuses.Add(new Domain.OrderStatus
-            {
-                Name = data.Name,
-            });
+            Context.OrderStatuses.Add(_mapper.Map<OrderStatus>(data));
 
             Context.SaveChanges();
         }

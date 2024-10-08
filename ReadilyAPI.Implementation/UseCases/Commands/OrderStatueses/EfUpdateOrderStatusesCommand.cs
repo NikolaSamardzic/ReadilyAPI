@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
@@ -15,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
     public class EfUpdateOrderStatusesCommand : EfUseCase, IUpdateOrderStatusCommand
     {
         private readonly UpdateOrderStatusValidatior _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateOrderStatusesCommand(ReadilyContext context, UpdateOrderStatusValidatior validator) : base(context)
+        public EfUpdateOrderStatusesCommand(ReadilyContext context, UpdateOrderStatusValidatior validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfUpdateOrderStatusesCommand() { }
@@ -38,7 +41,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
                 throw new EntityNotFoundException(data.Id, nameof(Domain.OrderStatus));
             }
 
-            orderStatus.Name = data.Name;
+            _mapper.Map(data, orderStatus);
 
             Context.SaveChanges();
         }
