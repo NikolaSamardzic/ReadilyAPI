@@ -1,7 +1,9 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Publisher;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
     public class EfCreatePublisherCommand : EfUseCase, ICreatePublisherCommand
     {
         private readonly CreatePublisherValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreatePublisherCommand(ReadilyContext context, CreatePublisherValidator validator) : base(context)
+        public EfCreatePublisherCommand(ReadilyContext context, CreatePublisherValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            this._mapper = mapper;
         }
 
         private EfCreatePublisherCommand() { }
@@ -30,10 +34,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
         {
             _validator.ValidateAndThrow(data);
 
-            Context.Publishers.Add(new Domain.Publisher
-            {
-                Name = data.Name,
-            });
+            Context.Publishers.Add(_mapper.Map<Publisher>(data));
 
             Context.SaveChanges();
         }

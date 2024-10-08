@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -13,11 +14,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindPublisherQuery : EfUseCase, IFindPublisherQuery
     {
-        private readonly ReadilyContext _context;
+        private readonly IMapper _mapper;
 
-        public EfFindPublisherQuery(ReadilyContext context) : base(context)
+        public EfFindPublisherQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
-            _context = context;
+            this._mapper = mapper;
         }
 
         private EfFindPublisherQuery() { }
@@ -37,12 +38,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.Publisher));
             }
 
-            return new PublisherDto
-            {
-                Id = publisher.Id,
-                Name = publisher.Name,
-                BookCount = publisher.Books.Count
-            };
+            return _mapper.Map<PublisherDto>(publisher);
         }
     }
 }
