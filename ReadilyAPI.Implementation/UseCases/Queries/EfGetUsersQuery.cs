@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Address;
 using ReadilyAPI.Application.UseCases.DTO.Biography;
@@ -17,8 +18,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetUsersQuery : EfUseCase, IGetUsersQuery
     {
-        public EfGetUsersQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetUsersQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetUsersQuery() { }
@@ -64,62 +68,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             var users = query.ToList();
 
-            var result = new PagedResponse<UserDto>() {
+            return new PagedResponse<UserDto>() {
                 CurrentPage = page,
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
-                Items = new List<UserDto>() { }
+                Items = _mapper.Map<IEnumerable<UserDto>>(users)
             };
-
-            var items = new List<UserDto>();
-            foreach (var user in users)
-            {
-                var userDto = new UserDto
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Username = user.Username,
-                    Email = user.Email,
-                    Phone = user.Phone,
-                    Role = user.Role.Name,
-                    Avatar = user.Avatar.Src,
-                    Biography = new BiographyDto
-                    {
-                        Text = "/"
-                    },
-                    Address = new AddressDto
-                    {
-                        AddressName = "/",
-                        AddressNumber = "/",
-                        City = "/",
-                        Country = "/",
-                        State = "/",
-                        PostalCode = "/",
-                    }
-                };
-
-                if (user.Biography != null)
-                {
-                    userDto.Biography.Text = user.Biography.Text;
-                }
-
-                if (user.Address != null)
-                {
-                    userDto.Address.AddressNumber = user.Address.AddressNumber;
-                    userDto.Address.AddressName = user.Address.AddressName;
-                    userDto.Address.City = user.Address.City;
-                    userDto.Address.State = user.Address.State;
-                    userDto.Address.Country = user.Address.Country;
-                    userDto.Address.PostalCode = user.Address.PostalCode;
-                }
-
-                items.Add(userDto);
-            }
-            
-            result.Items = items;
-
-            return result;
         }
     }
 }

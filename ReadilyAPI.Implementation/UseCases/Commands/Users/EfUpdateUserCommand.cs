@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.Commands.Users;
@@ -18,11 +19,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
     {
         private readonly IApplicationActor _actor;
         private readonly UpdateUserValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateUserCommand(ReadilyContext context, IApplicationActor actor, UpdateUserValidator userValidator) : base(context)
+        public EfUpdateUserCommand(ReadilyContext context, IApplicationActor actor, UpdateUserValidator userValidator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = userValidator;
+            _mapper = mapper;
         }
 
         private EfUpdateUserCommand() { }
@@ -42,46 +45,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                 .Include(x=>x.Address)
                 .First(x=> x.Id == _actor.Id);
 
-            user.Username = data.Username;
-            user.FirstName = data.FirstName;
-            user.LastName = data.LastName;
-            user.Phone = data.Phone;
+            var oldImage = Path.Combine("wwwroot", "images", "avatars", user.Avatar.Src);
 
-            if(user.Role.Name == "Writer")
-            {
-                user.Biography.Text = data.Biography.Text;
-            }
+            _mapper.Map(data, user);
 
-            if(data.Address != null && user.Address != null)
+            if (data.Avatar != null && user.Avatar != null)
             {
-                user.Address.AddressName = data.Address.AddressName;
-                user.Address.AddressNumber = data.Address.AddressNumber;
-                user.Address.State = data.Address.State;
-                user.Address.City= data.Address.City;
-                user.Address.Country = data.Address.Country;
-                user.Address.PostalCode = data.Address.PostalCode;
-            }
-            else if(data.Address != null){
-                var address = new Domain.Address
-                {
-                    AddressName = data.Address.AddressName,
-                    AddressNumber = data.Address.AddressNumber,
-                    State = data.Address.State,
-                    City = data.Address.City,
-                    Country = data.Address.Country,
-                    PostalCode = data.Address.PostalCode,
-                };
-                user.Address = address;
-            }else if(user.Address != null)
-            {
-                Context.Addresses.Remove(user.Address);
-            }
-
-            if(data.Avatar != null && user.Avatar != null)
-            {
-                var oldImage = Path.Combine("wwwroot", "images", "avatars", user.Avatar.Src);
-                user.Avatar.Src = data.Avatar;
-
                 var tempFile = Path.Combine("wwwroot", "temp", data.Avatar);
                 var destinationFile = Path.Combine("wwwroot", "images", "avatars", data.Avatar);
                 System.IO.File.Move(tempFile, destinationFile);
@@ -89,15 +58,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             }
             else if(data.Avatar != null)
             {
-                user.Avatar = new Domain.Image
-                {
-                    Src = data.Avatar,
-                    Alt = "User avatar"
-                };
-
                 var tempFile = Path.Combine("wwwroot", "temp", data.Avatar);
                 var destinationFile = Path.Combine("wwwroot", "images", "avatars", data.Avatar);
                 System.IO.File.Move(tempFile, destinationFile);
+            }
+            else
+            {
+                user.Avatar = Context.Images.First(x => x.Src.Contains("default"));
             }
 
             Context.SaveChanges();

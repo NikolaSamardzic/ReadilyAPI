@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
@@ -15,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
     public class EfCreateUserUseCaseCommand : EfUseCase, ICreateUserUseCaseCommand
     {
         private readonly CreateUserUseCaseValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateUserUseCaseCommand(ReadilyContext context, CreateUserUseCaseValidator validator) : base(context)
+        public EfCreateUserUseCaseCommand(ReadilyContext context, CreateUserUseCaseValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfCreateUserUseCaseCommand() { }
@@ -31,17 +34,14 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
             _validator.ValidateAndThrow(data);
 
-            var useCases = Context.UserUseCases.Where(x=>x.UserId == data.UserId).ToList();
-            Context.UserUseCases.RemoveRange(useCases);
+            var removeUseCases = Context.UserUseCases.Where(x=>x.UserId == data.UserId).ToList();
+            Context.UserUseCases.RemoveRange(removeUseCases);
 
-            foreach(var useCase in data.UserUseCases)
+            var useCases = _mapper.Map<IEnumerable<Domain.UserUseCase>>(data);
+
+            foreach(var useCase in useCases)
             {
-                Context.UserUseCases.Add(new Domain.UserUseCase
-                {
-                    UserId = data.UserId,
-                    UseCaseId = useCase.UseCaseId,
-                    Status = useCase.Status,
-                });
+                Context.UserUseCases.Add(useCase);
             }
 
             Context.SaveChanges();
