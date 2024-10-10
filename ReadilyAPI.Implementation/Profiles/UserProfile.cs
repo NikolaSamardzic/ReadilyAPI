@@ -21,8 +21,7 @@ namespace ReadilyAPI.Implementation.Profiles
 
             CreateMap<CreateBiographyDto, Biography>();
 
-            // dodati logiku da umesto null stoji /
-            CreateMap<Address, AddressDto>();
+            //CreateMap<Address, AddressDto>();
 
             CreateMap<Biography, BiographyDto>();
 
@@ -64,7 +63,27 @@ namespace ReadilyAPI.Implementation.Profiles
                 }));
 
             CreateMap<User, UserDto>()
-                .ForMember(d => d.Avatar, s => s.MapFrom(x => x.Avatar.Src));
+                .ForMember(d => d.Avatar, s => s.MapFrom(x => x.Avatar.Src))
+                .ForMember(d => d.Address, s => s.MapFrom(x => new AddressDto
+                {
+                    Id = x.Address.Id,
+                    AddressName = x.Address.AddressName,
+                    AddressNumber = x.Address.AddressNumber,
+                    City = x.Address.City,
+                    State = x.Address.State,
+                    PostalCode = x.Address.PostalCode,
+                    Country = x.Address.Country,
+                }))
+                .ForMember(d => d.Address, opt => opt.NullSubstitute(new AddressDto
+                {
+                    Id = 0,
+                    AddressName = "/",
+                    AddressNumber = "/",
+                    City = "/",
+                    State = "/",
+                    PostalCode = "/",
+                    Country = "/",
+                }));
         }
     }
 }
