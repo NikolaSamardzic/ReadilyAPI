@@ -8,5 +8,6 @@ namespace ReadilyAPI.Application.UseCases.DTO.Messages
     {
         public string Subject { get; set; }
         public string Message { get; set; }
+        public int UserId { get; set; }
     }
 }
