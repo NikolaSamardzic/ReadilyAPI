@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Books;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -13,8 +14,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindBookQuery : EfUseCase, IFindBookQuery
     {
-        public EfFindBookQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfFindBookQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfFindBookQuery() { }
@@ -43,34 +47,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.Book));
             }
 
-            return new BookDto
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Description = book.Description,
-                Price = (decimal)book.Price,
-                Pages = book.PageCount,
-                Image = book.Image.Src,
-                ReleaseDate = book.ReleaseDate,
-                Publisher = book.Publisher.Name,
-                CommentCount = book.Comments.Count,
-                Author = new Author
-                {
-                    Id = book.Author.Id,
-                    Name = book.Author.FirstName + " " + book.Author.LastName,
-                },
-                Rating = new Rating
-                {
-                    Stars = book.Reviews.Any() ? (int)book.Reviews.Average(x => x.Stars) : 0,
-                    Count = book.Reviews.Count
-                },
-                Categories = book.Categories.Select(x => new Category
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Image = x.Image.Src
-                })
-            };
+            return _mapper.Map<BookDto>(book);
         }
     }
 }

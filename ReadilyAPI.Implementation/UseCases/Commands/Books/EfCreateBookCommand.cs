@@ -1,9 +1,11 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using FluentValidation.Internal;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.DTO.Books;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Books;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -19,11 +21,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
     {
         private readonly IApplicationActor _actor;
         private readonly CreateBookValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateBookCommand(ReadilyContext context, IApplicationActor actor, CreateBookValidator validator) : base(context)
+        public EfCreateBookCommand(ReadilyContext context, IApplicationActor actor, CreateBookValidator validator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfCreateBookCommand() { }
@@ -36,48 +40,15 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
         {
             _validator.ValidateAndThrow(data);
 
+            data.AuthorId = _actor.Id;
 
-            var book = new Domain.Book
-            {
-                Title = data.Title,
-                Description = data.Description,
-                PageCount = data.PageCount,
-                ReleaseDate = data.ReleaseDate,
-                PublisherId = data.PublisherId,
-                AuthorId = _actor.Id,
-                Price = data.Price,
-                Image = new Domain.Image
-                {
-                    Src = data.Image,
-                    Alt = "Book Image"
-                },
-            };
-
-            var price = new Domain.Price
-            {
-                Book = book,
-                Value = data.Price,
-            };
-
-            Context.Prices.Add(price);
-
-            var bookCategories = new List<Domain.BookCategory>();
-            foreach (var category in data.CategoryIds) {
-                var bookCategory = new Domain.BookCategory
-                {
-                    Book = book,
-                    CategoryId = category
-                };
-                bookCategories.Add(bookCategory);
-            }
-
-            book.BookCategories = bookCategories;
+            Context.Books.Add(_mapper.Map<Book>(data));
 
             var tempFile = Path.Combine("wwwroot", "temp", data.Image);
             var smallerFile = Path.Combine("wwwroot", "images", "books", "small", data.Image);
             var biggerFile = Path.Combine("wwwroot", "images", "books", "large", data.Image);
 
-            using (var originalImage = Image.Load(tempFile))
+            using (var originalImage = SixLabors.ImageSharp.Image.Load(tempFile))
             {
                 var smallerImage = ResizeImage(originalImage, height: 200);
                 smallerImage.Save(smallerFile);
@@ -88,12 +59,10 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 
             System.IO.File.Delete(tempFile);
 
-            Context.Books.Add(book);
-
             Context.SaveChanges();
         }
 
-        private Image ResizeImage(Image originalImage, int height)
+        private SixLabors.ImageSharp.Image ResizeImage(SixLabors.ImageSharp.Image originalImage, int height)
         {
             var ratio = (double)height / originalImage.Height;
             var width = (int)(originalImage.Width * ratio);

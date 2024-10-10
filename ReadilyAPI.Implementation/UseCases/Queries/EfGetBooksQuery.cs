@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Books;
 using ReadilyAPI.Application.UseCases.DTO.Category;
@@ -16,8 +17,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetBooksQuery : EfUseCase, IGetBooksQuery
     {
-        public EfGetBooksQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetBooksQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetBooksQuery() { }
@@ -63,30 +67,14 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<SmallerBookDto>
             {
                 CurrentPage = page,
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
-                Items = query.Select(x => new SmallerBookDto
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Image = x.Image.Src,
-                    Price = (decimal)x.Price,
-                    Author = new Author
-                    {
-                        Id = x.Id,
-                        Name = x.Author.FirstName + " " + x.Author.LastName,
-                    },
-                    Rating = new Rating
-                    {
-                        Stars = x.Reviews.Any() ? (int)x.Reviews.Average(x => x.Stars) : 0,
-                        Count = x.Reviews.Count
-                    }
-                }).ToList()
+                Items = _mapper.Map<IEnumerable<SmallerBookDto>>(result)
             };
         }
     }
