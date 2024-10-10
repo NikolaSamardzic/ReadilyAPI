@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.Exceptions;
@@ -18,11 +19,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Reviews
     {
         private readonly IApplicationActor _actor;
         private readonly UpdateReviewValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateReviewCommand(ReadilyContext context, IApplicationActor actor, UpdateReviewValidator validator) : base(context)
+        public EfUpdateReviewCommand(ReadilyContext context, IApplicationActor actor, UpdateReviewValidator validator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfUpdateReviewCommand() { }
@@ -35,19 +38,19 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Reviews
         {
             _validator.ValidateAndThrow(data);
 
-            if (!Context
-                .Users
-                .Include(x => x.Reviews)
-                .First(x => x.Id == _actor.Id)
-                .Reviews
-                .Any(r => r.Id == data.Id)) 
+            var review = Context.Reviews.FirstOrDefault(x => x.Id == data.Id);
+
+            if (review == null)
+            {
+                throw new EntityNotFoundException(data.Id, nameof(Domain.Review));
+            }
+
+            if (review.UserId != _actor.Id) 
             {
                 throw new ConflictException("Review doesn't belong to this user.");
             }
 
-            var review = Context.Reviews.Find(data.Id);
-
-            review.Stars = data.Stars;
+            _mapper.Map(data, review);
 
             Context.SaveChanges();
         }
