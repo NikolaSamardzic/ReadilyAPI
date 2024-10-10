@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.Exceptions;
@@ -18,11 +19,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
     {
         private readonly IApplicationActor _actor;
         private readonly UpdateCommentValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateCommentCommand(ReadilyContext context, IApplicationActor actor, UpdateCommentValidator validator) : base(context)
+        public EfUpdateCommentCommand(ReadilyContext context, IApplicationActor actor, UpdateCommentValidator validator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfUpdateCommentCommand() { }
@@ -35,6 +38,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
         {
             _validator.ValidateAndThrow(data);
 
+            data.UserId = _actor.Id;
+
             var comment = Context
                                 .Comments
                                 .Include(x => x.Images)
@@ -44,25 +49,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
                 throw new ConflictException("Comment is not created by this user.");
             }
 
-            foreach(var image in comment.Images)
-            {
-                var path = Path.Combine("wwwroot", "images", "comments", image.Src);
-
-                System.IO.File.Delete(path);
-            }
-
-            Context.Images.RemoveRange(comment.Images);
-
-            comment.Text = data.Text;
-
             if (data.Images != null && data.Images.Any())
             {
-                comment.Images = data.Images.Select(i => new Domain.Image
-                {
-                    Src = i,
-                    Alt = "Comment Image"
-                }).ToList();
-
                 foreach (var image in data.Images)
                 {
                     var tempFile = Path.Combine("wwwroot", "temp", image);
@@ -70,6 +58,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
                     System.IO.File.Move(tempFile, destinationFile);
                 }
             }
+
+            _mapper.Map(data, comment);
 
             Context.SaveChanges();
         }

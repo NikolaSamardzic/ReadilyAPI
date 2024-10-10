@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.Commands.Comments;
 using ReadilyAPI.Application.UseCases.DTO.Comments;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Comment;
 using System;
 using System.Collections.Generic;
@@ -16,11 +18,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
     {
         private readonly IApplicationActor _actor;
         private readonly CreateCommentValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateCommentCommand(ReadilyContext context, IApplicationActor actor, CreateCommentValidator validator) : base(context)
+        public EfCreateCommentCommand(ReadilyContext context, IApplicationActor actor, CreateCommentValidator validator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfCreateCommentCommand() { }
@@ -33,20 +37,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
         {
             _validator.ValidateAndThrow(data);
 
-            var comment = new Domain.Comment
-            {
-                UserId = _actor.Id,
-                BookId = data.BookId,
-                Text = data.Text,
-            };
+            data.UserId = _actor.Id;
 
             if(data.Images != null &&  data.Images.Any()) {
-                comment.Images = data.Images.Select(i => new Domain.Image
-                {
-                    Src = i,
-                    Alt = "Comment Image"
-                }).ToList();
-
                 foreach (var image in data.Images)
                 {
                     var tempFile = Path.Combine("wwwroot", "temp", image);
@@ -55,7 +48,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
                 }
             }
 
-            Context.Comments.Add(comment);
+            Context.Comments.Add(_mapper.Map<Comment>(data));
 
             Context.SaveChanges();
         }
