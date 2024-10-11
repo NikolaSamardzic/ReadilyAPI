@@ -1,4 +1,5 @@
-﻿using ReadilyAPI.Application.Exceptions;
+﻿using AutoMapper;
+using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Audit;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
@@ -12,8 +13,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindErrorLogQuery : EfUseCase, IFindErrorLogQuery
     {
-        public EfFindErrorLogQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfFindErrorLogQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfFindErrorLogQuery() { }
@@ -31,13 +35,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.ErrorLog));
             }
 
-            return new ErrorLogDto
-            {
-                Id = errorLog.Id,
-                Message = errorLog.Message,
-                StackTrace = errorLog.StackTrace,
-                Time = errorLog.Time,
-            };
+            return _mapper.Map<ErrorLogDto>(errorLog);
         }
     }
 }

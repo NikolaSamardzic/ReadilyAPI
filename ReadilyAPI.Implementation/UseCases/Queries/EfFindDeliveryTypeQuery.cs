@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.DeliveryType;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindDeliveryTypeQuery : EfUseCase, IFindDeliveryTypeQuery
     {
-        public EfFindDeliveryTypeQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfFindDeliveryTypeQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfFindDeliveryTypeQuery() { }
@@ -35,12 +39,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.DeliveryType));
             }
 
-            return new DeliveryTypeDto
-            {
-                Id = deliveryType.Id,
-                Name = deliveryType.Name,
-                OrdersCount = deliveryType.Orders.Count()
-            };
+            return _mapper.Map<DeliveryTypeDto>(deliveryType);
         }
     }
 }

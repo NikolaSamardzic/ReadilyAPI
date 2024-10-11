@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfFindOrderStatusQuery : EfUseCase, IFindOrderStatusQuery
     {
-        public EfFindOrderStatusQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfFindOrderStatusQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfFindOrderStatusQuery() { }
@@ -35,12 +39,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.OrderStatus));
             }
 
-            return new OrderStatusDto
-            {
-                Id = orderStatus.Id,
-                Name = orderStatus.Name,
-                OrdersCount = orderStatus.Orders.Count()
-            };
+            return _mapper.Map<OrderStatusDto>(orderStatus);
         }
     }
 }

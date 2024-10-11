@@ -8,5 +8,6 @@ namespace ReadilyAPI.Application.UseCases.DTO.Review
     {
         public int BookId { get; set; }
         public int Stars { get; set; }
+        public int UserId { get; set; }
     }
 }

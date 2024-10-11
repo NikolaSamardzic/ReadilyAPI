@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ReadilyAPI.Application;
@@ -20,11 +21,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
     {
         private readonly IApplicationActor _actor;
         private readonly CreateCartValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateCartCommand(ReadilyContext context, IApplicationActor actor, CreateCartValidator validator) : base(context)
+        public EfCreateCartCommand(ReadilyContext context, IApplicationActor actor, CreateCartValidator validator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfCreateCartCommand() { }
@@ -54,19 +57,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
                 Context.Orders.Add(order);
             }
 
-            Context.BooksOrders.RemoveRange(Context.BooksOrders.Where(x => x.OrderId == order.Id));
+            data.Order = order;
 
-            foreach(var item in data.Items)
-            {
-                var bookOrder = new BookOrder
-                {
-                    Quantity = item.Quantity,
-                    BookId = item.BookId,
-                    Order = order
-                };
-
-                Context.BooksOrders.Add(bookOrder);
-            }
+            Context.BooksOrders.AddRange(_mapper.Map<IEnumerable<BookOrder>>(data));
 
             var books = 
                 Context

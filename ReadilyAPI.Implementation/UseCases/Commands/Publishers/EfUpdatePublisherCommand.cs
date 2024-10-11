@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Publishers;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
@@ -15,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
     public class EfUpdatePublisherCommand : EfUseCase, IUpdatePublisherCommand
     {
         private readonly UpdatePublisherValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdatePublisherCommand(ReadilyContext context, UpdatePublisherValidator validator) : base(context)
+        public EfUpdatePublisherCommand(ReadilyContext context, UpdatePublisherValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            this._mapper = mapper;
         }
 
         private EfUpdatePublisherCommand() { }
@@ -37,7 +40,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
                 throw new EntityNotFoundException(data.Id, nameof(Domain.Publisher));
             }
 
-            publisher.Name = data.Name;
+            _mapper.Map(data, publisher);
+
+            Context.Publishers.Update(publisher);
 
             Context.SaveChanges();
         }

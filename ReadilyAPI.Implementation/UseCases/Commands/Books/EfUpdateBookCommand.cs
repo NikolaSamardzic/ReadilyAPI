@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.DTO.Books;
@@ -18,10 +19,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
     public class EfUpdateBookCommand : EfUseCase, IUpdateBookCommand
     {
         private readonly UpdateBookValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateBookCommand(ReadilyContext context, UpdateBookValidator validator) : base(context)
+        public EfUpdateBookCommand(ReadilyContext context, UpdateBookValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfUpdateBookCommand() { }
@@ -34,26 +37,19 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
         {
             _validator.ValidateAndThrow(data);
 
-            var book = Context.Books.Find(data.Id);
+            var book = Context.Books.Include(x => x.Prices).Single(x => x.Id == data.Id);
 
-            book.Title = data.Title;
-            book.PageCount = data.PageCount;
-            book.ReleaseDate = data.ReleaseDate;
-            book.Description = data.Description;
-            book.PublisherId = data.PublisherId;
+            _mapper.Map(data, book);
 
-            if(book.Price != data.Price)
+            var latestPrice = book.Prices.OrderByDescending(p => p.CreatedAt).First().Value;
+
+            if (latestPrice != data.Price)
             {
-                var price = new Domain.Price
+                book.Prices.Add(new Domain.Price
                 {
-                    Book = book,
                     Value = data.Price,
-                };
-
-                book.Price = data.Price;
-
-                Context.Prices.Add(price);
-
+                    BookId = data.Id,
+                });
 
                 var orders = Context.Orders
                     .Include(x => x.BookOrders)
@@ -65,21 +61,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
                     order.TotalPrice = order.BookOrders.Sum(x => (decimal)x.Book.Price * x.Quantity);
                 }
             }
-
-            Context.BooksCategories.RemoveRange(Context.BooksCategories.Where(x => x.BookId == data.Id));
-
-            var bookCategories = new List<Domain.BookCategory>();
-            foreach (var category in data.CategoryIds)
-            {
-                var bookCategory = new Domain.BookCategory
-                {
-                    BookId = book.Id,
-                    CategoryId = category
-                };
-                bookCategories.Add(bookCategory);
-            }
-
-            book.BookCategories = bookCategories;
 
             if (!string.IsNullOrEmpty(data.Image))
             {

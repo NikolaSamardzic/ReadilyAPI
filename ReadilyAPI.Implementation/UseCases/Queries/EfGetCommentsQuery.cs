@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Comments;
 using ReadilyAPI.Application.UseCases.DTO.Images;
@@ -15,8 +16,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetCommentsQuery : EfUseCase, IGetCommentsQuery
     {
-        public EfGetCommentsQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetCommentsQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetCommentsQuery() { }
@@ -68,27 +72,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 CurrentPage = page,
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
-                Items = res.Select(x => new CommentDto
-                {
-                    Id = x.Id,
-                    Text = x.Text,
-                    Rating = x.Book.Reviews.FirstOrDefault(r => r.UserId == x.UserId)?.Stars ?? 0,
-                    Images = x.Images.Select(i => new ImageDto
-                    {
-                        Alt = i.Alt,
-                        Src = i.Src,
-                    }),
-                    UserComment = new UserCommentDto
-                    {
-                        Id = x.UserId,
-                        Username = x.User.Username,
-                        Avatar = new ImageDto
-                        {
-                            Src = x.User.Avatar.Src,
-                            Alt = x.User.Avatar.Alt,
-                        }
-                    }
-                })
+                Items = _mapper.Map<IEnumerable<CommentDto>>(res)
             };
         }
     }

@@ -12,16 +12,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 {
     public class EfUpdateRoleCommand : EfUseCase, IUpdateRoleCommand
     {
         private readonly UpdateRoleValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateRoleCommand(ReadilyContext context, UpdateRoleValidator validator) : base(context)
+        public EfUpdateRoleCommand(ReadilyContext context, UpdateRoleValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            this._mapper = mapper;
         }
 
         private EfUpdateRoleCommand() { }
@@ -43,16 +46,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
                 throw new EntityNotFoundException(data.Id.GetValueOrDefault(), nameof(Domain.Role));
             }
 
-            foreach (RoleUseCase useCase in role.RoleUseCases)
-            {
-                Context.RoleUseCases.Remove(useCase);
-            }
+            _mapper.Map(data, role);
 
-            role.Name = data.Name;
-            role.RoleUseCases = data.RoleUseCases.Select(useCaseId => new Domain.RoleUseCase
-            {
-                UseCaseId = useCaseId,
-            }).ToList();
+            Context.Roles.Update(role);
 
             Context.SaveChanges();
         }

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.Notification;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
@@ -19,11 +20,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
     {
         private readonly CreateUserValidator _validator;
         private readonly IEmailService _emailService;
+        private readonly IMapper _mapper;
 
-        public EfCreateUserCommand(ReadilyContext context, CreateUserValidator validator, IEmailService emailService) : base(context)
+        public EfCreateUserCommand(ReadilyContext context, CreateUserValidator validator, IEmailService emailService, IMapper mapper) : base(context)
         {
             _validator = validator;
             _emailService = emailService;
+            _mapper = mapper;
         }
 
         private EfCreateUserCommand() { }
@@ -36,17 +39,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
             _validator.ValidateAndThrow(data);
 
-            User user = new User
-            {
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                Email = data.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(data.Password),
-                Username = data.Username,
-                Phone = data.Phone,
-                RoleId = data.RoleId,
-                Token = TokenGenerator.GenerateRandomToken(30)
-            };
+            var user = _mapper.Map<User>(data);
 
             if (string.IsNullOrEmpty(data.Avatar))
             {
@@ -54,42 +47,10 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             }
             else
             {
-                user.Avatar = new Image
-                {
-                    Src = data.Avatar,
-                    Alt = "User avatar"
-                };
-
                 var tempFile = Path.Combine("wwwroot", "temp", data.Avatar);
                 var destinationFile = Path.Combine("wwwroot", "images", "avatars", data.Avatar);
                 System.IO.File.Move(tempFile, destinationFile);
             }
-
-            Address address = null;
-            if (data.Address != null)
-            {
-                address = new Address
-                {
-                    AddressName = data.Address.AddressName,
-                    AddressNumber = data.Address.AddressNumber,
-                    City = data.Address.City,
-                    State = data.Address.State,
-                    Country = data.Address.Country,
-                    PostalCode = data.Address.PostalCode,
-                };
-            }
-
-            Biography biography = null; 
-            if(Context.Roles.First(x=>x.Id == data.RoleId).Name == "Writer")
-            {
-                biography = new Biography
-                {
-                    Text = data.Biography.Text,
-                };
-            }
-
-            user.Address = address;
-            user.Biography = biography;
 
             _emailService.SendEmailAsync(user.Email, "Activate Account", $"http://localhost:5001/users/{user.Token}/verify");
 

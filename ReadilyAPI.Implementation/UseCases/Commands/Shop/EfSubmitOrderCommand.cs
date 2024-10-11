@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Shop;
@@ -18,11 +19,13 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
     {
         private readonly IApplicationActor _actor;
         private readonly SubmitOrderValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfSubmitOrderCommand(ReadilyContext context, IApplicationActor actor, SubmitOrderValidator validator) : base(context)
+        public EfSubmitOrderCommand(ReadilyContext context, IApplicationActor actor, SubmitOrderValidator validator, IMapper mapper) : base(context)
         {
             _actor = actor;
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfSubmitOrderCommand() { }
@@ -42,20 +45,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
                 throw new ConflictException("There is no active order.");
             }
 
-            var address = new Address
-            {
-                AddressName = data.AddressName,
-                AddressNumber = data.AddressNumber,
-                City = data.City,
-                State = data.State,
-                Country = data.Country,
-                PostalCode = data.PostalCode,
-            };
+            data.StatusId = Context.OrderStatuses.First(x => x.Name == "Processing").Id;
 
-            order.FinishedAt = DateTime.Now;
-            order.Status = Context.OrderStatuses.First(x => x.Name == "Processing");
-            order.Address = address;
-            order.DeliveryTypeId = data.DeliveryTypeId;
+            _mapper.Map(data, order);
 
             Context.SaveChanges();
         }

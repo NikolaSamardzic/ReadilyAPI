@@ -274,7 +274,7 @@ namespace ReadilyAPI.API.Extensions
             services.AddTransient<IGetLogEntriesQuery, EfGetLogEntriesQuery>();
             services.AddTransient<IGetErrorLogsQuery, EfGetErrorLogsQuery>();
             services.AddTransient<IFindErrorLogQuery, EfFindErrorLogQuery>();
-            services.AddTransient<IUserProfileQuery, EfUserProfileQuery>();
+            services.AddTransient<IUserProfileQuery, EfFindUserProfileQuery>();
             services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
             services.AddTransient<IFindBookQuery, EfFindBookQuery>();
             services.AddTransient<IGetBooksQuery, EfGetBooksQuery>();

@@ -13,6 +13,7 @@ namespace ReadilyAPI.Application.UseCases.DTO.Books
         public string Description { get; set; }
         public string Image {  get; set; }
         public int PublisherId { get; set; }
+        public int AuthorId { get; set; }
         public IEnumerable<int> CategoryIds { get; set; }
     }
 }

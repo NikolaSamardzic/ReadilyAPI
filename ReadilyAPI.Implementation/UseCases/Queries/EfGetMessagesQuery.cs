@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Messages;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetMessagesQuery : EfUseCase, IGetMessagesQuery
     {
-        public EfGetMessagesQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetMessagesQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetMessagesQuery() { }
@@ -59,22 +63,14 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage);
 
             return new PagedResponse<MessageDto>
             {
                 CurrentPage = page,
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
-                Items = query.Select(x => new MessageDto
-                {
-                    Id = x.Id,
-                    UserId = x.UserId,
-                    Username = x.User.Username,
-                    Subject = x.Subject,
-                    Message = x.Text,
-                    CreatedAt = x.CreatedAt.ToLongDateString(),
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<MessageDto>>(result),
             };
         }
     }

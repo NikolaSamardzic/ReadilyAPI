@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Application.UseCases.DTO.DeliveryType;
@@ -15,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
     public class EfUpdateDeliveryTypeCommand : EfUseCase, IUpdateDeliveryTypeCommand
     {
         private readonly UpdateDeliveryTypeValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfUpdateDeliveryTypeCommand(ReadilyContext context, UpdateDeliveryTypeValidator validator) : base(context)
+        public EfUpdateDeliveryTypeCommand(ReadilyContext context, UpdateDeliveryTypeValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfUpdateDeliveryTypeCommand() { }
@@ -38,7 +41,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
                 throw new EntityNotFoundException(data.Id, nameof(Domain.DeliveryType));
             }
 
-            deliveryType.Name = data.Name;
+            _mapper.Map(data, deliveryType);
 
             Context.SaveChanges();
         }

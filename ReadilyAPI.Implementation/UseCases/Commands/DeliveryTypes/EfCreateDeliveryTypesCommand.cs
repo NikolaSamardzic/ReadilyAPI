@@ -1,7 +1,9 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using ReadilyAPI.Application.UseCases.Commands.DeliveryTypes;
 using ReadilyAPI.Application.UseCases.DTO.DeliveryType;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.DeliveryType;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
     public class EfCreateDeliveryTypesCommand : EfUseCase, ICreateDeliveryTypeCommand
     {
         private readonly CreateDeliveryTypeValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateDeliveryTypesCommand(ReadilyContext context, CreateDeliveryTypeValidator validator) : base(context)
+        public EfCreateDeliveryTypesCommand(ReadilyContext context, CreateDeliveryTypeValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfCreateDeliveryTypesCommand() { }
@@ -30,10 +34,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
         {
             _validator.ValidateAndThrow(data);
 
-            Context.DeliveryTypes.Add(new Domain.DeliveryType
-            {
-                Name = data.Name,
-            });
+            Context.DeliveryTypes.Add(_mapper.Map<DeliveryType>(data));
 
             Context.SaveChanges();
         }

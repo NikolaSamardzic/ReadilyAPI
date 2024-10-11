@@ -7,5 +7,6 @@ namespace ReadilyAPI.Application.UseCases.DTO.Wishlists
     public class CreateWishlistDto
     {
         public int BookId { get; set; }
+        public int UserId { get; set; }
     }
 }

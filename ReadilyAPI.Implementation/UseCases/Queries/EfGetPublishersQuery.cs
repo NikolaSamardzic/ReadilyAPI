@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
 using ReadilyAPI.Application.UseCases.Queries;
@@ -14,8 +15,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetPublishersQuery : EfUseCase, IGetPublishersQuery
     {
-        public EfGetPublishersQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetPublishersQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            this._mapper = mapper;
         }
 
         private EfGetPublishersQuery() { }
@@ -53,17 +57,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<PublisherDto>
             {
                 CurrentPage = page,
-                Items = query.Select(x => new PublisherDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    BookCount = x.Books.Count,
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<PublisherDto>>(result),
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
             };

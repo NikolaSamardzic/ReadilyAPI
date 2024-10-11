@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Wishlists;
@@ -16,10 +17,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
     public class EfGetWishlistsQuery : EfUseCase, IGetWishlistQuery
     {
         private readonly IApplicationActor _actor;
+        private readonly IMapper _mapper;
 
-        public EfGetWishlistsQuery(ReadilyContext context, IApplicationActor actor) : base(context)
+        public EfGetWishlistsQuery(ReadilyContext context, IApplicationActor actor, IMapper mapper) : base(context)
         {
             _actor = actor;
+            _mapper = mapper;
         }
 
         private EfGetWishlistsQuery() { }
@@ -67,30 +70,14 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<WishlistDto>
             {
                 CurrentPage = page,
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
-                Items = query.Select(x => new WishlistDto
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Image = x.Image.Src,
-                    Price = (decimal)x.Price,
-                    Author = new Author
-                    {
-                        Id = x.Id,
-                        Name = x.Author.FirstName + " " + x.Author.LastName,
-                    },
-                    Rating = new Rating
-                    {
-                        Stars = x.Reviews.Any() ? (int)x.Reviews.Average(x => x.Stars) : 0,
-                        Count = x.Reviews.Count
-                    }
-                }).ToList()
+                Items = _mapper.Map<IEnumerable<WishlistDto>>(result)
             };
         }
     }

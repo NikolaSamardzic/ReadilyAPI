@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.User;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,12 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
     public class EfCreateUserFavoriteCategoriesCommand : EfUseCase, ICreateUserFavoriteCategoriesCommand
     {
         private readonly CreateUserFavoriteCategoriesValidator _validator;
+        private readonly IMapper _mapper;
 
-        public EfCreateUserFavoriteCategoriesCommand(ReadilyContext context, CreateUserFavoriteCategoriesValidator validator) : base(context)
+        public EfCreateUserFavoriteCategoriesCommand(ReadilyContext context, CreateUserFavoriteCategoriesValidator validator, IMapper mapper) : base(context)
         {
             _validator = validator;
+            _mapper = mapper;
         }
 
         private EfCreateUserFavoriteCategoriesCommand() { }
@@ -31,13 +35,11 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
         {
             _validator.ValidateAndThrow(data);
 
-            foreach(var category in data.CategoryIds)
+            var userCategories = _mapper.Map<IEnumerable<UserCategory>>(data);
+
+            foreach(var category in userCategories)
             {
-                Context.UsersCategories.Add(new Domain.UserCategory
-                {
-                    UserId = data.UserId,
-                    CategoryId = category
-                });
+                Context.UsersCategories.Add(category);
             }
 
             Context.SaveChanges();

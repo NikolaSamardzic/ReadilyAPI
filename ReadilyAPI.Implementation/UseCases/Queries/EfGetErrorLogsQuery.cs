@@ -1,4 +1,5 @@
-﻿using ReadilyAPI.Application.UseCases.DTO;
+﻿using AutoMapper;
+using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.Audit;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.Application.UseCases.Queries.Searches;
@@ -13,8 +14,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetErrorLogsQuery : EfUseCase, IGetErrorLogsQuery
     {
-        public EfGetErrorLogsQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetErrorLogsQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetErrorLogsQuery() { }
@@ -43,18 +47,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<ErrorLogDto>
             {
                 CurrentPage = page,
-                Items = query.Select(x => new ErrorLogDto
-                {
-                    Id = x.Id,
-                    Message = x.Message,
-                    StackTrace = x.StackTrace,
-                    Time = x.Time
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<ErrorLogDto>>(result),
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
             };

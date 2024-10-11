@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.DTO;
 using ReadilyAPI.Application.UseCases.DTO.DeliveryType;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
@@ -15,8 +16,11 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 {
     public class EfGetDeliveryTypeQuery : EfUseCase, IGetDeliveryTypesQuery
     {
-        public EfGetDeliveryTypeQuery(ReadilyContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public EfGetDeliveryTypeQuery(ReadilyContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         private EfGetDeliveryTypeQuery() { }
@@ -54,17 +58,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
             int skip = perPage * (page - 1);
 
-            query = query.Skip(skip).Take(perPage);
+            var result = query.Skip(skip).Take(perPage).ToList();
 
             return new PagedResponse<DeliveryTypeDto>
             {
                 CurrentPage = page,
-                Items = query.Select(x => new DeliveryTypeDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    OrdersCount = x.Orders.Count(),
-                }).ToList(),
+                Items = _mapper.Map<IEnumerable<DeliveryTypeDto>>(result),
                 ItemsPerPage = perPage,
                 TotalCount = totalCount,
             };
