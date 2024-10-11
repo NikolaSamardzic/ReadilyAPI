@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Images;
@@ -17,10 +18,12 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
     public class EfFindCartQuery : EfUseCase, IFindCartQuery
     {
         private readonly IApplicationActor _actor;
+        private readonly IMapper _mapper;
 
-        public EfFindCartQuery(ReadilyContext context, IApplicationActor actor) : base(context)
+        public EfFindCartQuery(ReadilyContext context, IApplicationActor actor, IMapper mapper) : base(context)
         {
             _actor = actor;
+            _mapper = mapper;
         }
 
         private EfFindCartQuery() { }
@@ -43,22 +46,7 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
                 throw new EntityNotFoundException(search, nameof(Domain.Order));
             }
 
-            return new CartDto
-            {
-                Total = cart.TotalPrice,
-                Items = cart.BookOrders.Select(bo => new CartItem
-                {
-                    Id = bo.Id,
-                    Title = bo.Book.Title,
-                    Image = new ImageDto
-                    {
-                        Alt = bo.Book.Image.Alt,
-                        Src = bo.Book.Image.Src,
-                    },
-                    UnitPrice = (decimal)bo.Book.Price,
-                    Price = (decimal)bo.Book.Price * bo.Quantity,
-                }).ToList()
-            };
+            return _mapper.Map<CartDto>(cart);
         }
     }
 }
