@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
 {
-    public class EfActivateDeliveryTypeCommand : EfUseCase, IActivateDeliveryTypeCommand
+    public class EfActivateDeliveryTypeCommand : EfActivateUseCase<DeliveryType>, IActivateDeliveryTypeCommand
     {
         public EfActivateDeliveryTypeCommand(ReadilyContext context) : base(context)
         {
@@ -18,22 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
 
         private EfActivateDeliveryTypeCommand() { }
 
-        public int Id => 30;
+        public override int Id => 30;
 
-        public string Name => "Activate Delivery Type";
-
-        public void Execute(int data)
-        {
-            var deliveryType = Context.DeliveryTypes.FirstOrDefault(x => x.Id == data);
-
-            if (deliveryType == null)
-            {
-                throw new EntityNotFoundException(data, nameof(DeliveryType));
-            }
-
-            deliveryType.IsActive = true;
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Activate Delivery Type";
     }
 }

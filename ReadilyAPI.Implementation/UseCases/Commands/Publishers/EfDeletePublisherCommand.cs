@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 {
-    public class EfDeletePublisherCommand : EfUseCase, IDeletePublisherCommand
+    public class EfDeletePublisherCommand : EfDeleteUseCase<Publisher>, IDeletePublisherCommand
     {
         public EfDeletePublisherCommand(ReadilyContext context) : base(context)
         {
@@ -19,27 +20,22 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 
         private EfDeletePublisherCommand() { }
 
-        public int Id => 15;
+        public override int Id => 15;
 
-        public string Name => "Delete Publisher";
+        public override string Name => "Delete Publisher";
 
-        public void Execute(int data)
+        protected override IQueryable<Publisher> IncludeRelatedEntities(IQueryable<Publisher> query)
         {
-            var publisher = Context.Publishers.Include(x=>x.Books).FirstOrDefault(x=>x.Id == data && x.IsActive);
+            return query
+                    .Include(x => x.Books);
+        }
 
-            if(publisher == null)
+        protected override void BeforeDelete(Publisher entity)
+        {
+            if (entity.Books.Any())
             {
-                throw new EntityNotFoundException(data, nameof(Domain.Publisher));
+                throw new EntityReferencedException(entity.Id, nameof(Domain.Publisher));
             }
-
-            if(publisher.Books.Any())
-            {
-                throw new EntityReferencedException(data, nameof(Domain.Publisher));
-            }
-
-            publisher.IsActive = false;
-
-            Context.SaveChanges();
         }
     }
 }

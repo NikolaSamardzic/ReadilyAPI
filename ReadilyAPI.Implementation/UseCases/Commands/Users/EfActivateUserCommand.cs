@@ -1,6 +1,7 @@
 ﻿using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 {
-    public class EfActivateUserCommand : EfUseCase, IActivateUserCommand
+    public class EfActivateUserCommand : EfActivateUseCase<User>, IActivateUserCommand
     {
         public EfActivateUserCommand(ReadilyContext context) : base(context)
         {
@@ -17,22 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 
         private EfActivateUserCommand() { }
 
-        public int Id => 42;
+        public override int Id => 42;
 
-        public string Name => "Activate User";
-
-        public void Execute(int data)
-        {
-            var user = Context.Users.FirstOrDefault(x => x.Id == data);
-
-            if (user == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Domain.User));
-            }
-
-            user.IsActive = true;
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Activate User";
     }
 }

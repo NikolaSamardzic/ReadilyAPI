@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 {
-    public class EfActivateRoleCommand : EfUseCase, IActivateRoleCommand
+    public class EfActivateRoleCommand : EfActivateUseCase<Role>, IActivateRoleCommand
     {
         public EfActivateRoleCommand(ReadilyContext context) : base(context)
         {
@@ -18,23 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 
         private EfActivateRoleCommand() { }
 
-        public int Id => 12;
+        public override int Id => 12;
 
-        public string Name => "Activate Role";
-
-        public void Execute(int data)
-        {
-
-            var role = Context.Roles.FirstOrDefault(x=> x.Id == data);
-
-            if(role == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Domain.Role));
-            }
-
-            role.IsActive = true;
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Activate Role";
     }
 }

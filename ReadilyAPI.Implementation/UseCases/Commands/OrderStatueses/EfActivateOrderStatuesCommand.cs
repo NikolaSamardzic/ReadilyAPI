@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
 {
-    public class EfActivateOrderStatuesCommand : EfUseCase, IActivateOrderStatusCommand
+    public class EfActivateOrderStatuesCommand : EfActivateUseCase<OrderStatus>, IActivateOrderStatusCommand
     {
         public EfActivateOrderStatuesCommand(ReadilyContext context) : base(context)
         {
@@ -18,22 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
 
         private EfActivateOrderStatuesCommand() { }
 
-        public int Id => 25;
+        public override int Id => 25;
 
-        public string Name => "Activate Order Status";
-
-        public void Execute(int data)
-        {
-            var orderStatus = Context.OrderStatuses.FirstOrDefault(x => x.Id == data && !x.IsActive);
-
-            if (orderStatus == null)
-            {
-                throw new EntityNotFoundException(data, nameof(OrderStatus));
-            }
-
-            orderStatus.IsActive = true;
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Activate Order Status";
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 {
-    public class EfActivatePublisherCommand : EfUseCase, IActivatePublisherCommand
+    public class EfActivatePublisherCommand : EfActivateUseCase<Publisher>, IActivatePublisherCommand
     {
         public EfActivatePublisherCommand(ReadilyContext context) : base(context)
         {
@@ -18,22 +18,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 
         private EfActivatePublisherCommand() { }
 
-        public int Id => 18;
+        public override int Id => 18;
 
-        public string Name => "Activate Publisher";
-
-        public void Execute(int data)
-        {
-            var publsiher = Context.Publishers.FirstOrDefault(x => x.Id == data);
-
-            if (publsiher == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Publisher));
-            }
-
-            publsiher.IsActive = true;
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Activate Publisher";
     }
 }

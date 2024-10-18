@@ -3,6 +3,7 @@ using ReadilyAPI.Application;
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Wishlist;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
 {
-    public class EfDeleteWishlistCommand : EfUseCase, IDeleteWishlistCommand
+    public class EfDeleteWishlistCommand : EfDeleteUseCase<Domain.Wishlist>, IDeleteWishlistCommand
     {
         private readonly IApplicationActor _actor;
 
@@ -23,24 +24,15 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
 
         private EfDeleteWishlistCommand() { }
 
-        public int Id => 62;
+        public override int Id => 62;
 
-        public string Name => "Delete Wishlist";
+        public override string Name => "Delete Wishlist";
 
-        public void Execute(int data)
+        protected override bool IsHardDelete() => true;
+
+        protected override IQueryable<Domain.Wishlist> IncludeRelatedEntities(IQueryable<Domain.Wishlist> query)
         {
-            var wishlist = Context
-                .Wishlists
-                .FirstOrDefault(x => x.BookId == data && x.UserId == _actor.Id);
-
-            if(wishlist == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Domain.Wishlist));
-            }
-
-            Context.Wishlists.Remove(wishlist);
-
-            Context.SaveChanges();
+            return query.Where(x => x.UserId == _actor.Id);
         }
     }
 }

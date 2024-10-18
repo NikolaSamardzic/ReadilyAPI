@@ -9,10 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 {
-    public class EfDeleteBookCommand : EfUseCase, IDeleteBookCommand
+    public class EfDeleteBookCommand : EfDeleteUseCase<Book>, IDeleteBookCommand
     {
         private readonly IApplicationActor _actor;
 
@@ -23,40 +24,29 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 
         private EfDeleteBookCommand() { }
 
-        public int Id => 47;
+        public override int Id => 47;
 
-        public string Name => "Delete Book Use Case";
+        public override string Name => "Delete Book Use Case";
 
-        public void Execute(int data)
+        protected override void BeforeDelete(Book entity)
         {
-            var book = Context.Books.FirstOrDefault(x => x.Id == data && x.IsActive);
-
-            if (book == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Book));
-            }
-
-            if(book.AuthorId != _actor.Id)
+            if (entity.AuthorId != _actor.Id)
             {
                 throw new ConflictException("Book doesn't belong to this author.");
             }
 
-            book.IsActive = false;
-
             var orders = Context.Orders
-                .Include(x => x.BookOrders)
-                .Where(x => x.FinishedAt == null && x.BookOrders.Any(bo => bo.BookId == data)).ToList();
+            .Include(x => x.BookOrders)
+                .Where(x => x.FinishedAt == null && x.BookOrders.Any(bo => bo.BookId == entity.Id)).ToList();
 
-            foreach(var order in orders)
+            foreach (var order in orders)
             {
-                var bookOrder = order.BookOrders.First(x=> x.BookId == data);
+                var bookOrder = order.BookOrders.First(x => x.BookId == entity.Id);
 
                 Context.BooksOrders.Remove(bookOrder);
 
                 order.TotalPrice = order.BookOrders.Sum(x => (decimal)x.Book.Price * x.Quantity);
             }
-
-            Context.SaveChanges();
         }
     }
 }

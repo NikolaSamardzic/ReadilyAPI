@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReadilyAPI.Domain;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 {
-    public class EfActivateBookCommand : EfUseCase, IActivateBookCommand
+    public class EfActivateBookCommand : EfActivateUseCase<Book>, IActivateBookCommand
     {
         private readonly IApplicationActor _actor;
 
@@ -21,27 +22,16 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 
         private EfActivateBookCommand() { }
 
-        public int Id => 48;
+        public override int Id => 48;
 
-        public string Name => "Activate Book Command";
+        public override string Name => "Activate Book Command";
 
-        public void Execute(int data)
+        protected override void BeforeActivate(Book entity)
         {
-            var book = Context.Books.FirstOrDefault(x => x.Id == data);
-
-            if(book == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Domain.Book));
-            }
-
-            if(book.AuthorId != _actor.Id)
+            if (entity.AuthorId != _actor.Id)
             {
                 throw new ConflictException("Book doesn't belong to this author");
             }
-
-            book.IsActive = true;
-
-            Context.SaveChanges();
         }
     }
 }

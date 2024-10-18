@@ -3,6 +3,7 @@ using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.Application.UseCases.DTO.Category;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 {
-    public class EfDeleteCategoryCommand : EfUseCase, IDeleteCategoryCommand
+    public class EfDeleteCategoryCommand : EfDeleteUseCase<Category>, IDeleteCategoryCommand
     {
         public EfDeleteCategoryCommand(ReadilyContext context) : base(context)
         {
@@ -19,28 +20,22 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
         private EfDeleteCategoryCommand() { }
 
-        public int Id => 2;
+        public override int Id => 2;
 
-        public string Name => "Delete Category";
+        public override string Name => "Delete Category";
 
-        public void Execute(int data)
+        protected override IQueryable<Category> IncludeRelatedEntities(IQueryable<Category> query)
         {
-            var category = Context.Categories
-                                .Include(x=>x.Children)
-                                .FirstOrDefault(x=> x.Id == data && x.IsActive);
+            return query
+                .Include(x => x.Children);
+        }
 
-            if(category == null) {
-                throw new EntityNotFoundException(data,nameof(Domain.Category));
-            }
-
-            foreach (var item in category.Children)
+        protected override void BeforeDelete(Category entity)
+        {
+            foreach (var item in entity.Children)
             {
                 item.IsActive = false;
             }
-
-            category.IsActive = false;
-
-            Context.SaveChanges();
         }
     }
 }

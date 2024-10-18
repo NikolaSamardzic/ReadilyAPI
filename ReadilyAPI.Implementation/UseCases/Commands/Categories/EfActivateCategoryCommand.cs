@@ -2,6 +2,7 @@
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Categories;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,39 +12,27 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 {
-    public class EfActivateCategoryCommand : EfUseCase, IActivateCategoryCommand
+    public class EfActivateCategoryCommand : EfActivateUseCase<Category>, IActivateCategoryCommand
     {
-        private readonly ReadilyContext _context;
-
-        public EfActivateCategoryCommand(ReadilyContext context) : base(context)
-        {
-            _context = context;
-        }
+        public EfActivateCategoryCommand(ReadilyContext context) : base(context) { }
 
         private EfActivateCategoryCommand() { }
 
-        public int Id => 4;
+        public override int Id => 4;
 
-        public string Name => "Activate Category";
+        public override string Name => "Activate Category";
 
-        public void Execute(int id)
+        protected override IQueryable<Category> IncludeRelatedEntities(IQueryable<Category> query)
         {
-            var category = _context.Categories.Include(x => x.Parent)
-            .FirstOrDefault(x => x.Id == id);
+            return query.Include(x => x.Parent);
+        }
 
-            if (category == null)
+        protected override void BeforeActivate(Category entity)
+        {
+            if (entity.Parent != null && !entity.Parent.IsActive)
             {
-                throw new EntityNotFoundException(id, nameof(Domain.Category));
+                throw new EntityReferencesDeletedEntityException(entity.Id, nameof(Domain.Category));
             }
-
-            if (category.Parent != null && !category.Parent.IsActive)
-            {
-                throw new EntityReferencesDeletedEntityException(id,nameof(Domain.Category));
-            }
-
-            category.IsActive = true;
-
-            Context.SaveChanges();
         }
     }
 }

@@ -5,13 +5,15 @@ using ReadilyAPI.DataAccess;
 using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 {
-    public class EfDeleteRoleCommand : EfUseCase, IDeleteRoleCommand
+    public class EfDeleteRoleCommand : EfDeleteUseCase<Role>, IDeleteRoleCommand
     {
         public EfDeleteRoleCommand(ReadilyContext context) : base(context)
         {
@@ -19,30 +21,23 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 
         private EfDeleteRoleCommand() { }
 
-        public int Id => 9;
+        public override int Id => 9;
 
-        public string Name => "Delete Role";
+        public override string Name => "Delete Role";
 
-        public void Execute(int data)
+        protected override IQueryable<Role> IncludeRelatedEntities(IQueryable<Role> query)
         {
-            var role = Context.Roles
+            return query
                 .Include(x => x.RoleUseCases)
-                .Include(x => x.Users)
-                .FirstOrDefault(x => x.Id == data && x.IsActive);
+                .Include(x => x.Users);
+        }
 
-            if (role == null)
+        protected override void BeforeDelete(Role entity)
+        {
+            if (entity.Users.Any())
             {
-                throw new EntityNotFoundException(data, nameof(Domain.Role));
+                throw new EntityReferencedException(entity.Id, nameof(Domain.Role));
             }
-
-            if (role.Users.Any())
-            {
-                throw new EntityReferencedException(data, nameof(Domain.Role));
-            }
-
-            role.IsActive = false;
-
-            Context.SaveChanges();
         }
     }
 }

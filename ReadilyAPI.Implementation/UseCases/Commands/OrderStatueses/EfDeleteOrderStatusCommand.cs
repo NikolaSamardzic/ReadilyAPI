@@ -2,6 +2,7 @@
 using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.OrderStatuses;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
 {
-    public class EfDeleteOrderStatusCommand : EfUseCase, IDeleteOrderStatusCommand
+    public class EfDeleteOrderStatusCommand : EfDeleteUseCase<OrderStatus>, IDeleteOrderStatusCommand
     {
         public EfDeleteOrderStatusCommand(ReadilyContext context) : base(context)
         {
@@ -18,22 +19,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.OrderStatueses
 
         private EfDeleteOrderStatusCommand() { }
 
-        public int Id => 21;
+        public override int Id => 21;
 
-        public string Name => "Delete Order Status";
-
-        public void Execute(int data)
-        {
-            var orderStatus = Context.OrderStatuses.FirstOrDefault(x => x.Id == data && x.IsActive);
-
-            if (orderStatus == null)
-            {
-                throw new EntityNotFoundException(data, nameof(Domain.OrderStatus));
-            }
-
-            orderStatus.IsActive = false;
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Delete Order Status";
     }
 }
