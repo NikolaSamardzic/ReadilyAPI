@@ -6,6 +6,7 @@ using ReadilyAPI.Application.UseCases.DTO.Images;
 using ReadilyAPI.Application.UseCases.DTO.Shop;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,38 +16,28 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Queries
 {
-    public class EfFindCartQuery : EfUseCase, IFindCartQuery
+    public class EfFindCartQuery : EfFindUseCase<CartDto, Order>, IFindCartQuery
     {
         private readonly IApplicationActor _actor;
-        private readonly IMapper _mapper;
 
-        public EfFindCartQuery(ReadilyContext context, IApplicationActor actor, IMapper mapper) : base(context)
+        public EfFindCartQuery(ReadilyContext context, IApplicationActor actor, IMapper mapper) : base(context, mapper)
         {
             _actor = actor;
-            _mapper = mapper;
         }
 
         private EfFindCartQuery() { }
 
-        public int Id => 65;
+        public override int Id => 65;
 
-        public string Name => "Find Cart";
+        public override string Name => "Find Cart";
 
-        public CartDto Execute(int search)
+        protected override IQueryable<Order> IncludeRelatedEntities(IQueryable<Order> query)
         {
-            var cart = Context
-                .Orders
+            return query
                 .Include(o => o.BookOrders)
                 .ThenInclude(bo => bo.Book)
                 .ThenInclude(b => b.Image)
-                .FirstOrDefault(x => x.Id == search && x.StatusId == Context.OrderStatuses.First(os => os.Name == "Pending").Id && x.UserId == _actor.Id);
-
-            if(cart == null)
-            {
-                throw new EntityNotFoundException(search, nameof(Domain.Order));
-            }
-
-            return _mapper.Map<CartDto>(cart);
+                .Where(x =>x.StatusId == Context.OrderStatuses.First(os => os.Name == "Pending").Id && x.UserId == _actor.Id);
         }
     }
 }

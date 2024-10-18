@@ -5,6 +5,7 @@ using ReadilyAPI.Application.UseCases.DTO.DeliveryType;
 using ReadilyAPI.Application.UseCases.DTO.OrderStatus;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,33 +14,22 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Queries
 {
-    public class EfFindDeliveryTypeQuery : EfUseCase, IFindDeliveryTypeQuery
+    public class EfFindDeliveryTypeQuery : EfFindUseCase<DeliveryTypeDto, DeliveryType>, IFindDeliveryTypeQuery
     {
-        private readonly IMapper _mapper;
-
-        public EfFindDeliveryTypeQuery(ReadilyContext context, IMapper mapper) : base(context)
+        public EfFindDeliveryTypeQuery(ReadilyContext context, IMapper mapper) : base(context, mapper)
         {
-            _mapper = mapper;
         }
 
         private EfFindDeliveryTypeQuery() { }
 
-        public int Id => 28;
+        public override int Id => 28;
 
-        public string Name => "Find Delivery Type";
+        public override string Name => "Find Delivery Type";
 
-        public DeliveryTypeDto Execute(int search)
+        protected override IQueryable<DeliveryType> IncludeRelatedEntities(IQueryable<DeliveryType> query)
         {
-            var deliveryType = Context.DeliveryTypes
-                .Include(x => x.Orders)
-                .FirstOrDefault(x => x.Id == search && x.IsActive);
-
-            if (deliveryType == null)
-            {
-                throw new EntityNotFoundException(search, nameof(Domain.DeliveryType));
-            }
-
-            return _mapper.Map<DeliveryTypeDto>(deliveryType);
+            return query
+                .Include(x => x.Orders);
         }
     }
 }

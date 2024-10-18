@@ -13,33 +13,22 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Queries
 {
-    public class EfFindRoleQuery : EfUseCase, IFindRoleQuery
+    public class EfFindRoleQuery : EfFindUseCase<RoleDto, Role>, IFindRoleQuery
     {
-        private readonly IMapper _mapper;
-
-        public EfFindRoleQuery(ReadilyContext context, IMapper mapper) : base(context)
+        public EfFindRoleQuery(ReadilyContext context, IMapper mapper) : base(context, mapper)
         {
-            this._mapper = mapper;
         }
 
         private EfFindRoleQuery() { }
 
-        public int Id => 10;
+        public override int Id => 10;
 
-        public string Name => "Find Role";
+        public override string Name => "Find Role";
 
-        public RoleDto Execute(int search)
+        protected override IQueryable<Role> IncludeRelatedEntities(IQueryable<Role> query)
         {
-            var role = Context.Roles
-                .Include(x=>x.RoleUseCases)
-                .FirstOrDefault(x=> x.Id == search && x.IsActive);
-
-            if (role == null)
-            {
-                throw new EntityNotFoundException(search, nameof(Domain.Role));
-            }
-
-            return _mapper.Map<RoleDto>(role);
+            return query
+                .Include(x => x.RoleUseCases);
         }
     }
 }

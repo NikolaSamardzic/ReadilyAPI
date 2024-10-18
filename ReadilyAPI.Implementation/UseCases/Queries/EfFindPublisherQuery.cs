@@ -4,6 +4,7 @@ using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.DTO.Publisher;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,33 +13,22 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Queries
 {
-    public class EfFindPublisherQuery : EfUseCase, IFindPublisherQuery
+    public class EfFindPublisherQuery : EfFindUseCase<PublisherDto, Publisher>, IFindPublisherQuery
     {
-        private readonly IMapper _mapper;
-
-        public EfFindPublisherQuery(ReadilyContext context, IMapper mapper) : base(context)
+        public EfFindPublisherQuery(ReadilyContext context, IMapper mapper) : base(context, mapper)
         {
-            this._mapper = mapper;
         }
 
         private EfFindPublisherQuery() { }
 
-        public int Id => 16;
+        public override int Id => 16;
 
-        public string Name => "Find Publisher";
+        public override string Name => "Find Publisher";
 
-        public PublisherDto Execute(int search)
+        protected override IQueryable<Publisher> IncludeRelatedEntities(IQueryable<Publisher> query)
         {
-            var publisher = Context.Publishers
-                .Include(x=>x.Books)
-                .FirstOrDefault(x=>x.Id == search && x.IsActive);
-
-            if(publisher == null )
-            {
-                throw new EntityNotFoundException(search, nameof(Domain.Publisher));
-            }
-
-            return _mapper.Map<PublisherDto>(publisher);
+            return query
+                .Include(x => x.Books);
         }
     }
 }

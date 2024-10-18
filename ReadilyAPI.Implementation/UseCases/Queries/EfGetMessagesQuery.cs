@@ -5,6 +5,8 @@ using ReadilyAPI.Application.UseCases.DTO.Messages;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.Application.UseCases.Queries.Searches;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
+using ReadilyAPI.Implementation.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,48 +32,15 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
         public PagedResponse<MessageDto> Execute(MessageSearch search)
         {
-            var query = Context
+            return Context
                 .Messages
                 .Include(x => x.User)
                 .Where(x => x.IsActive)
-                .AsQueryable();
-
-            if (search.UserId.HasValue)
-            {
-                query = query.Where(x => x.UserId == search.UserId);
-            }
-
-            if (search.StartDate.HasValue)
-            {
-                query = query.Where(x => x.CreatedAt > search.StartDate);
-            }
-
-            if (search.EndDate.HasValue)
-            {
-                query = query.Where(x => x.CreatedAt < search.EndDate);
-            }
-
-            if (!string.IsNullOrEmpty(search.Keyword))
-            {
-                query = query.Where(x => x.Subject.Contains(search.Keyword));
-            }
-
-            var totalCount = query.Count();
-
-            int perPage = search.PerPage.HasValue ? (int)Math.Abs((double)search.PerPage) : 10;
-            int page = search.Page.HasValue ? (int)Math.Abs((double)search.Page) : 1;
-
-            int skip = perPage * (page - 1);
-
-            var result = query.Skip(skip).Take(perPage);
-
-            return new PagedResponse<MessageDto>
-            {
-                CurrentPage = page,
-                ItemsPerPage = perPage,
-                TotalCount = totalCount,
-                Items = _mapper.Map<IEnumerable<MessageDto>>(result),
-            };
+                .WhereIf(search.UserId.HasValue, x => x.UserId == search.UserId)
+                .WhereIf(search.StartDate.HasValue, x => x.CreatedAt > search.StartDate)
+                .WhereIf(search.EndDate.HasValue, x => x.CreatedAt < search.EndDate)
+                .WhereIf(!string.IsNullOrEmpty(search.Keyword), x => x.Subject.Contains(search.Keyword))
+                .AsPagedReponse<Message, MessageDto>(search, _mapper);
         }
     }
 }

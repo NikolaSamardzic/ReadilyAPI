@@ -4,6 +4,8 @@ using ReadilyAPI.Application.UseCases.DTO.Audit;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.Application.UseCases.Queries.Searches;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
+using ReadilyAPI.Implementation.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,33 +31,10 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
         public PagedResponse<ErrorLogDto> Execute(ErrorLogSearch search)
         {
-            var query = Context.ErrorLogs.AsQueryable();
-
-            if(search.StartTime.HasValue) {
-                query = query.Where(x=>x.Time >  search.StartTime);
-            }
-
-            if(search.EndTime.HasValue)
-            {
-                query = query.Where(x => x.Time < search.EndTime);
-            }
-
-            var totalCount = query.Count();
-
-            int perPage = search.PerPage.HasValue ? (int)Math.Abs((double)search.PerPage) : 10;
-            int page = search.Page.HasValue ? (int)Math.Abs((double)search.Page) : 1;
-
-            int skip = perPage * (page - 1);
-
-            var result = query.Skip(skip).Take(perPage).ToList();
-
-            return new PagedResponse<ErrorLogDto>
-            {
-                CurrentPage = page,
-                Items = _mapper.Map<IEnumerable<ErrorLogDto>>(result),
-                ItemsPerPage = perPage,
-                TotalCount = totalCount,
-            };
+            return Context.ErrorLogs
+                .WhereIf(search.StartTime.HasValue, x => x.Time > search.StartTime)
+                .WhereIf(search.EndTime.HasValue, x => x.Time < search.EndTime)
+                .AsPagedReponse<ErrorLog, ErrorLogDto>(search, _mapper);
         }
     }
 }

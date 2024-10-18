@@ -6,6 +6,8 @@ using ReadilyAPI.Application.UseCases.DTO.Wishlists;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.Application.UseCases.Queries.Searches;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
+using ReadilyAPI.Implementation.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,50 +37,19 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
         {
             var wishlist = Context.Wishlists.Where(x => x.UserId == _actor.Id).ToList();
 
-            var query = Context
+            return Context
                 .Books
                 .Include(x => x.Image)
                 .Include(x => x.Author)
                 .Include(x => x.Reviews)
                 .Where(x => x.IsActive && wishlist.Select(w => w.BookId).Contains(x.Id))
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(search.Keyword))
-            {
-                query = query.Where(x => x.Title.Contains(search.Keyword) || (x.Author.FirstName + x.Author.LastName).Contains(search.Keyword));
-            }
-
-            if (search.MinPrice.HasValue)
-            {
-                query = query.Where(x => x.Price > search.MinPrice);
-            }
-
-            if (search.MaxPrice.HasValue)
-            {
-                query = query.Where(x => x.Price < search.MaxPrice);
-            }
-
-            if (search.CategoryIds.Any())
-            {
-                query = query.Where(x => x.Categories.Any(c => search.CategoryIds.Contains(c.Id)));
-            }
-
-            var totalCount = query.Count();
-
-            int perPage = search.PerPage.HasValue ? (int)Math.Abs((double)search.PerPage) : 10;
-            int page = search.Page.HasValue ? (int)Math.Abs((double)search.Page) : 1;
-
-            int skip = perPage * (page - 1);
-
-            var result = query.Skip(skip).Take(perPage).ToList();
-
-            return new PagedResponse<WishlistDto>
-            {
-                CurrentPage = page,
-                ItemsPerPage = perPage,
-                TotalCount = totalCount,
-                Items = _mapper.Map<IEnumerable<WishlistDto>>(result)
-            };
+                .WhereIf(!string.IsNullOrEmpty(search.Keyword),
+                x =>
+                x.Title.Contains(search.Keyword) || (x.Author.FirstName + x.Author.LastName).Contains(search.Keyword))
+                .WhereIf(search.MinPrice.HasValue, x => x.Price > search.MinPrice)
+                .WhereIf(search.MaxPrice.HasValue, x => x.Price < search.MaxPrice)
+                .WhereIf(search.CategoryIds.Any(), x => x.Categories.Any(c => search.CategoryIds.Contains(c.Id)))
+                .AsPagedReponse<Book, WishlistDto>(search, _mapper);
         }
     }
 }

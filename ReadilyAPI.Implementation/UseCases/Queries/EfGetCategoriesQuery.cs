@@ -5,6 +5,8 @@ using ReadilyAPI.Application.UseCases.DTO.Category;
 using ReadilyAPI.Application.UseCases.Queries;
 using ReadilyAPI.Application.UseCases.Queries.Searches;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
+using ReadilyAPI.Implementation.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,43 +32,15 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
         public PagedResponse<CategoryDto> Execute(CategorySearch search)
         {
-            var query = Context.Categories
-                .Include(x=>x.Parent)
+            return Context.Categories
+                .Include(x => x.Parent)
                 .ThenInclude(x => x.Image)
                 .Include(x => x.Image)
-                .Where(x=>x.IsActive == search.IsActive)
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(search.Name))
-            {
-                query = query.Where(x=>x.Name.Contains(search.Name));
-            }
-
-            if(search.ParentId.HasValue)
-            {
-                query = query.Where(x => x.ParentId == search.ParentId);
-            }
-            else
-            {
-                query = query.Include(x => x.Children);
-            }
-
-            var totalCount = query.Count();
-
-            int perPage = search.PerPage.HasValue ? (int)Math.Abs((double)search.PerPage) : 10;
-            int page = search.Page.HasValue ? (int)Math.Abs((double)search.Page) : 1;
-
-            int skip = perPage * (page - 1);
-
-            var result = query.Skip(skip).Take(perPage).ToList();
-
-            return new PagedResponse<CategoryDto>
-            {
-                CurrentPage = page,
-                Items = _mapper.Map<IEnumerable<CategoryDto>>(result),
-                ItemsPerPage = perPage,
-                TotalCount = totalCount,
-            };
+                .IncludeIf(!search.ParentId.HasValue, x => x.Children)
+                .Where(x => x.IsActive == search.IsActive)
+                .WhereIf(!string.IsNullOrEmpty(search.Name), x => x.Name.Contains(search.Name))
+                .WhereIf(search.ParentId.HasValue, x => x.ParentId == search.ParentId)
+                .AsPagedReponse<Category, CategoryDto>(search, _mapper);
         }
     }
 }
