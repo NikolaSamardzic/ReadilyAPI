@@ -13,30 +13,16 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Publishers
 {
-    public class EfCreatePublisherCommand : EfUseCase, ICreatePublisherCommand
+    public class EfCreatePublisherCommand : EfCreateUseCase<CreatePublisherDto, Publisher>, ICreatePublisherCommand
     {
-        private readonly CreatePublisherValidator _validator;
-        private readonly IMapper _mapper;
-
-        public EfCreatePublisherCommand(ReadilyContext context, CreatePublisherValidator validator, IMapper mapper) : base(context)
+        public EfCreatePublisherCommand(ReadilyContext context, CreatePublisherValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
-            this._mapper = mapper;
         }
 
         private EfCreatePublisherCommand() { }
 
-        public int Id => 13;
+        public override int Id => 13;
 
-        public string Name => "Create Publisher";
-
-        public void Execute(CreatePublisherDto data)
-        {
-            _validator.ValidateAndThrow(data);
-
-            Context.Publishers.Add(_mapper.Map<Publisher>(data));
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Create Publisher";
     }
 }

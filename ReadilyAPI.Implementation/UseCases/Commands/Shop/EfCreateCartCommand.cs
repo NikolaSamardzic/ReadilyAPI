@@ -17,32 +17,28 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
 {
-    public class EfCreateCartCommand : EfUseCase, ICreateCartCommand
+    public class EfCreateCartCommand : EfCreateUseCase<CreateCartDto, BookOrder>, ICreateCartCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly CreateCartValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfCreateCartCommand(ReadilyContext context, IApplicationActor actor, CreateCartValidator validator, IMapper mapper) : base(context)
+        public EfCreateCartCommand(ReadilyContext context, IApplicationActor actor, CreateCartValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfCreateCartCommand() { }
 
-        public int Id => 64;
+        public override int Id => 64;
 
-        public string Name => "Create Cart";
+        public override string Name => "Create Cart";
 
-        public void Execute(CreateCartDto data)
+        protected override bool IsAddRange() => true;
+
+        protected override void BeforeAdd(CreateCartDto data)
         {
-            _validator.ValidateAndThrow(data);
-
             var order = Context.Orders.FirstOrDefault(x => x.FinishedAt == null && x.UserId == _actor.Id);
 
-            if(order == null)
+            if (order == null)
             {
                 order = new Domain.Order
                 {
@@ -59,24 +55,20 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
 
             data.Order = order;
 
-            Context.BooksOrders.AddRange(_mapper.Map<IEnumerable<BookOrder>>(data));
-
-            var books = 
-                Context
-                .Books
-                .Where(x => data.Items.Select(i => i.BookId).Contains(x.Id))
-                .ToList();
+            var books =
+                    Context
+                    .Books
+                    .Where(x => data.Items.Select(i => i.BookId).Contains(x.Id))
+                    .ToList();
 
             decimal sum = 0;
 
-            foreach(var item in data.Items)
+            foreach (var item in data.Items)
             {
                 sum += item.Quantity * (decimal)books.First(x => x.Id == item.BookId).Price;
             }
 
             order.TotalPrice = sum;
-
-            Context.SaveChanges();
         }
     }
 }

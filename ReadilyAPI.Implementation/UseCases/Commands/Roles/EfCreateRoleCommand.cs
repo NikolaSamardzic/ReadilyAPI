@@ -13,30 +13,16 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 {
-    public class EfCreateRoleCommand : EfUseCase, ICreateRoleCommand
+    public class EfCreateRoleCommand : EfCreateUseCase<CreateRoleDto, Role>, ICreateRoleCommand
     {
-        private readonly CreateRoleValidator _validator;
-        private readonly IMapper _mapper;
-
-        public EfCreateRoleCommand(ReadilyContext context, CreateRoleValidator validator, IMapper mapper) : base(context)
+        public EfCreateRoleCommand(ReadilyContext context, CreateRoleValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
-            this._mapper = mapper;
         }
 
         private EfCreateRoleCommand() { }
 
-        public int Id => 7;
+        public override int Id => 7;
 
-        public string Name => "Create Role";
-
-        public void Execute(CreateRoleDto data)
-        {
-            _validator.ValidateAndThrow(data);
-
-            Context.Roles.Add(_mapper.Map<Role>(data));
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Create Role";
     }
 }

@@ -16,6 +16,7 @@ namespace ReadilyAPI.Application.UseCases.DTO.User
         public string Phone { get; set; }
         public int RoleId { get; set; }
         public string Avatar {  get; set; }
+        public int AvatarId { get; set; }
         public CreateAddressDto Address { get; set; }
         public CreateBiographyDto Biography { get; set; }
     }

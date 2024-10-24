@@ -17,32 +17,24 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 {
-    public class EfCreateBookCommand : EfUseCase, ICreateBookCommand
+    public class EfCreateBookCommand : EfCreateUseCase<CreateBookDto, Book>, ICreateBookCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly CreateBookValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfCreateBookCommand(ReadilyContext context, IApplicationActor actor, CreateBookValidator validator, IMapper mapper) : base(context)
+        public EfCreateBookCommand(ReadilyContext context, IApplicationActor actor, CreateBookValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfCreateBookCommand() { }
 
-        public int Id => 45;
+        public override int Id => 45;
 
-        public string Name => "Create Book";
+        public override string Name => "Create Book";
 
-        public void Execute(CreateBookDto data)
+        protected override void BeforeAdd(CreateBookDto data)
         {
-            _validator.ValidateAndThrow(data);
-
             data.AuthorId = _actor.Id;
-
-            Context.Books.Add(_mapper.Map<Book>(data));
 
             var tempFile = Path.Combine("wwwroot", "temp", data.Image);
             var smallerFile = Path.Combine("wwwroot", "images", "books", "small", data.Image);
@@ -58,8 +50,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
             }
 
             System.IO.File.Delete(tempFile);
-
-            Context.SaveChanges();
         }
 
         private SixLabors.ImageSharp.Image ResizeImage(SixLabors.ImageSharp.Image originalImage, int height)

@@ -14,35 +14,18 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 {
-    public class EfCreateUserFavoriteCategoriesCommand : EfUseCase, ICreateUserFavoriteCategoriesCommand
+    public class EfCreateUserFavoriteCategoriesCommand : EfCreateUseCase<CreateUserFavoriteCategoriesDto, UserCategory>, ICreateUserFavoriteCategoriesCommand
     {
-        private readonly CreateUserFavoriteCategoriesValidator _validator;
-        private readonly IMapper _mapper;
-
-        public EfCreateUserFavoriteCategoriesCommand(ReadilyContext context, CreateUserFavoriteCategoriesValidator validator, IMapper mapper) : base(context)
+        public EfCreateUserFavoriteCategoriesCommand(ReadilyContext context, CreateUserFavoriteCategoriesValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfCreateUserFavoriteCategoriesCommand() { }
 
-        public int Id => 43;
+        public override int Id => 43;
 
-        public string Name => "Create User Favorite Categories";
+        public override string Name => "Create User Favorite Categories";
 
-        public void Execute(CreateUserFavoriteCategoriesDto data)
-        {
-            _validator.ValidateAndThrow(data);
-
-            var userCategories = _mapper.Map<IEnumerable<UserCategory>>(data);
-
-            foreach(var category in userCategories)
-            {
-                Context.UsersCategories.Add(category);
-            }
-
-            Context.SaveChanges();
-        }
+        protected override bool IsAddRange() => true;
     }
 }

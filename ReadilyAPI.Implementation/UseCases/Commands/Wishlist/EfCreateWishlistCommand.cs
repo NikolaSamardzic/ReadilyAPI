@@ -16,39 +16,29 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
 {
-    public class EfCreateWishlistCommand : EfUseCase, ICreateWishlistCommand
+    public class EfCreateWishlistCommand : EfCreateUseCase<CreateWishlistDto, Domain.Wishlist>, ICreateWishlistCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly CreateWishlistValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfCreateWishlistCommand(ReadilyContext context, IApplicationActor actor, CreateWishlistValidator validator, IMapper mapper) : base(context)
+        public EfCreateWishlistCommand(ReadilyContext context, IApplicationActor actor, CreateWishlistValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfCreateWishlistCommand() { }
 
-        public int Id => 61;
+        public override int Id => 61;
 
-        public string Name => "Create Wishlist";
+        public override string Name => "Create Wishlist";
 
-        public void Execute(CreateWishlistDto data)
+        protected override void BeforeAdd(CreateWishlistDto data)
         {
-            _validator.ValidateAndThrow(data);
-
             data.UserId = _actor.Id;
 
-            if (Context.Users.Include(x => x.Wishlist).First(x=> x.Id == _actor.Id).Wishlist.Any(x => x.Id == data.BookId)) 
+            if (Context.Users.Include(x => x.Wishlist).First(x => x.Id == _actor.Id).Wishlist.Any(x => x.Id == data.BookId))
             {
                 throw new ConflictException("Book already in a wishlist.");
             }
-
-            Context.Wishlists.Add(_mapper.Map<Domain.Wishlist>(data));
-
-            Context.SaveChanges();
         }
     }
 }

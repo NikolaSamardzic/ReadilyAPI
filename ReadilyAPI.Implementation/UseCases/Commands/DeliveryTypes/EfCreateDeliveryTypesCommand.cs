@@ -13,30 +13,16 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.DeliveryTypes
 {
-    public class EfCreateDeliveryTypesCommand : EfUseCase, ICreateDeliveryTypeCommand
+    public class EfCreateDeliveryTypesCommand : EfCreateUseCase<CreateDeliveryTypeDto, DeliveryType>, ICreateDeliveryTypeCommand
     {
-        private readonly CreateDeliveryTypeValidator _validator;
-        private readonly IMapper _mapper;
-
-        public EfCreateDeliveryTypesCommand(ReadilyContext context, CreateDeliveryTypeValidator validator, IMapper mapper) : base(context)
+        public EfCreateDeliveryTypesCommand(ReadilyContext context, CreateDeliveryTypeValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfCreateDeliveryTypesCommand() { }
 
-        public int Id => 24;
+        public override int Id => 24;
 
-        public string Name => "Create Delivery Type";
-
-        public void Execute(CreateDeliveryTypeDto data)
-        {
-            _validator.ValidateAndThrow(data);
-
-            Context.DeliveryTypes.Add(_mapper.Map<DeliveryType>(data));
-
-            Context.SaveChanges();
-        }
+        public override string Name => "Create Delivery Type";
     }
 }

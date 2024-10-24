@@ -14,32 +14,27 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
 {
-    public class EfCreateCommentCommand : EfUseCase, ICreateCommentCommand
+    public class EfCreateCommentCommand : EfCreateUseCase<CreateCommentDto, Comment>, ICreateCommentCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly CreateCommentValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfCreateCommentCommand(ReadilyContext context, IApplicationActor actor, CreateCommentValidator validator, IMapper mapper) : base(context)
+        public EfCreateCommentCommand(ReadilyContext context, IApplicationActor actor, CreateCommentValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfCreateCommentCommand() { }
 
-        public int Id => 53;
+        public override int Id => 53;
 
-        public string Name => "Create Comment";
+        public override string Name => "Create Comment";
 
-        public void Execute(CreateCommentDto data)
+        protected override void BeforeAdd(CreateCommentDto data)
         {
-            _validator.ValidateAndThrow(data);
-
             data.UserId = _actor.Id;
 
-            if(data.Images != null &&  data.Images.Any()) {
+            if (data.Images != null && data.Images.Any())
+            {
                 foreach (var image in data.Images)
                 {
                     var tempFile = Path.Combine("wwwroot", "temp", image);
@@ -47,10 +42,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
                     System.IO.File.Move(tempFile, destinationFile);
                 }
             }
-
-            Context.Comments.Add(_mapper.Map<Comment>(data));
-
-            Context.SaveChanges();
         }
     }
 }

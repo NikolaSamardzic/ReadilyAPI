@@ -4,6 +4,7 @@ using ReadilyAPI.Application.Notification;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.DataAccess.Migrations;
 using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Cryptography;
 using ReadilyAPI.Implementation.Notification;
@@ -16,34 +17,26 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 {
-    public class EfCreateUserCommand : EfUseCase, ICreateUserCommand
+    public class EfCreateUserCommand : EfCreateUseCase<CreateUserDto, User>, ICreateUserCommand
     {
-        private readonly CreateUserValidator _validator;
         private readonly IEmailService _emailService;
-        private readonly IMapper _mapper;
 
-        public EfCreateUserCommand(ReadilyContext context, CreateUserValidator validator, IEmailService emailService, IMapper mapper) : base(context)
+        public EfCreateUserCommand(ReadilyContext context, CreateUserValidator validator, IEmailService emailService, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
             _emailService = emailService;
-            _mapper = mapper;
         }
 
         private EfCreateUserCommand() { }
 
-        public int Id => 34;
+        public override int Id => 34;
 
-        public string Name => "Create User";
+        public override string Name => "Create User";
 
-        public void Execute(CreateUserDto data)
+        protected override void BeforeAdd(CreateUserDto data)
         {
-            _validator.ValidateAndThrow(data);
-
-            var user = _mapper.Map<User>(data);
-
             if (string.IsNullOrEmpty(data.Avatar))
             {
-                user.Avatar = Context.Images.First(x => x.Src.Contains("default"));
+                data.AvatarId = Context.Images.First(x => x.Src.Contains("default")).Id;
             }
             else
             {
@@ -52,11 +45,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                 System.IO.File.Move(tempFile, destinationFile);
             }
 
-            _emailService.SendEmailAsync(user.Email, "Activate Account", $"http://localhost:5001/users/{user.Token}/verify");
-
-            Context.Users.Add( user );
-
-            Context.SaveChanges();
+            _emailService.SendEmailAsync(data.Email, "Activate Account", $"http://localhost:5001/users/{user.Token}/verify");
         }
     }
 }

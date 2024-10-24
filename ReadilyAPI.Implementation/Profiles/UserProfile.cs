@@ -21,16 +21,15 @@ namespace ReadilyAPI.Implementation.Profiles
 
             CreateMap<CreateBiographyDto, Biography>();
 
-            //CreateMap<Address, AddressDto>();
-
             CreateMap<Biography, BiographyDto>();
 
             CreateMap<CreateUserDto, User>()
-                .ForMember(d => d.Avatar, s => s.MapFrom(x => new Image 
+                .ForMember(d => d.AvatarId, s => s.MapFrom(x => string.IsNullOrEmpty(x.Avatar) ? x.AvatarId : 0))
+                .ForMember(d => d.Avatar, s => s.MapFrom(x => !string.IsNullOrEmpty(x.Avatar) ? new Image
                 {
                     Src = x.Avatar,
-                    Alt = "User avatar",
-                }))
+                    Alt = "User avatar"
+                } : null))
                 .ForMember(d => d.Password, s => s.MapFrom(x => BCrypt.Net.BCrypt.HashPassword(x.Password)))
                 .ForMember(d => d.Token, s => s.MapFrom(x => TokenGenerator.GenerateRandomToken(30)));
 

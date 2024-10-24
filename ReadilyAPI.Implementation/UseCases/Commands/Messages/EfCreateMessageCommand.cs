@@ -16,31 +16,25 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Messages
 {
-    public class EfCreateMessageCommand : EfUseCase, ICreateMessageCommand
+    public class EfCreateMessageCommand : EfCreateUseCase<CreateMessageDto, Message>, ICreateMessageCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly CreateMessageValidator _validator;
         private readonly IEmailService _emailService;
-        private readonly IMapper _mapper;
 
-        public EfCreateMessageCommand(ReadilyContext context, IApplicationActor actor, CreateMessageValidator validator, IEmailService emailService, IMapper mapper) : base(context)
+        public EfCreateMessageCommand(ReadilyContext context, IApplicationActor actor, CreateMessageValidator validator, IEmailService emailService, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
             _emailService = emailService;
-            _mapper = mapper;
         }
 
         private EfCreateMessageCommand() { }
 
-        public int Id => 58;
+        public override int Id => 58;
 
-        public string Name => "Create Message";
+        public override string Name => "Create Message";
 
-        public void Execute(CreateMessageDto data)
+        protected override void BeforeAdd(CreateMessageDto data)
         {
-            _validator.ValidateAndThrow(data);
-
             data.UserId = _actor.Id;
 
             var admins = Context
@@ -53,10 +47,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Messages
             {
                 _emailService.SendEmailAsync(admin.Email, data.Subject, data.Message);
             }
-
-            Context.Messages.Add(_mapper.Map<Message>(data));
-
-            Context.SaveChanges();
         }
     }
 }
