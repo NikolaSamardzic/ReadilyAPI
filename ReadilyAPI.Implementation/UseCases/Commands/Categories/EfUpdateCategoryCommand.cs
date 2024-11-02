@@ -15,41 +15,30 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 {
-    public class EfUpdateCategoryCommand : EfUseCase, IUpdateCategoryCommand
+    public class EfUpdateCategoryCommand : EfUpdateUseCase<UpdateCategoryDto, Category>, IUpdateCategoryCommand
     {
-        private readonly UpdateCategoryValidator _validator;
-
-        private readonly IMapper _mapper;
-
         public EfUpdateCategoryCommand(ReadilyContext context, UpdateCategoryValidator validator, IMapper mapper)
-            : base(context)
+            : base(context, mapper, validator)
         {
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfUpdateCategoryCommand() { }
 
-        public int Id => 3;
+        public override int Id => 3;
 
-        public string Name => "Update Category";
+        public override string Name => "Update Category";
 
-        public void Execute(UpdateCategoryDto data)
+        protected override IQueryable<Category> IncludeRelatedEntities(IQueryable<Category> query)
         {
-            var category = Context.Categories.Include(x => x.Parent).Include(x => x.Children).FirstOrDefault(x => x.Id == data.Id && x.IsActive);
+            return query.Include(x => x.Parent).Include(x => x.Children).Where(x => x.IsActive);
+        }
 
-            if (category == null)
-            {
-                throw new EntityNotFoundException(data.Id.GetValueOrDefault(), nameof(Domain.Category));
-            }
-
-            _validator.ValidateAndThrow(data);
-
-            _mapper.Map(data, category);
-
+        protected override void BeforeUpdate(UpdateCategoryDto data, Category category)
+        {
             var children = Context.Categories.Where(c => data.ChildrenIds.Contains(c.Id)).ToList();
             category.Children = children;
 
@@ -72,10 +61,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Categories
 
                 System.IO.File.Delete(tempFile);
             }
-
-            Context.Categories.Update(category);
-
-            Context.SaveChanges();
         }
 
         private SixLabors.ImageSharp.Image ResizeImage(SixLabors.ImageSharp.Image originalImage, int height)

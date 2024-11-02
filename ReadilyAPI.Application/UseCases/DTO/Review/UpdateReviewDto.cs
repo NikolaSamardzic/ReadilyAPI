@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ReadilyAPI.Application.UseCases.DTO.Review
 {
-    public class UpdateReviewDto
+    public class UpdateReviewDto : UpdateDto
     {
-        public int Id { get; set; }
         public int Stars {  get; set; }
     }
 }

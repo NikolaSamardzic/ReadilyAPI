@@ -15,17 +15,19 @@ namespace ReadilyAPI.Implementation.Profiles
         {
             CreateMap<CreateWishlistDto, Wishlist>();
 
-            CreateMap<Book, WishlistDto>()
-                .ForMember(d => d.Image, s => s.MapFrom(x => x.Image.Src))
+            CreateMap<Wishlist, WishlistDto>()
+                .ForMember(x => x.Id, s => s.MapFrom(x => x.Id))
+                .ForMember(x => x.Title, s => s.MapFrom(x => x.Book.Title))
+                .ForMember(d => d.Image, s => s.MapFrom(x => x.Book.Image.Src))
                 .ForMember(d => d.Author, s => s.MapFrom(x => new Author
                 {
-                    Id = x.Author.Id,
-                    Name = x.Author.FirstName + " " + x.Author.LastName,
+                    Id = x.Book.Author.Id,
+                    Name = x.Book.Author.FirstName + " " + x.Book.Author.LastName,
                 }))
                 .ForMember(d => d.Rating, s => s.MapFrom(x => new Rating
                 {
-                    Stars = x.Reviews.Any() ? (int)x.Reviews.Average(x => x.Stars) : 0,
-                    Count = x.Reviews.Count,
+                    Stars = x.Book.Reviews.Any() ? (int)x.Book.Reviews.Average(x => x.Stars) : 0,
+                    Count = x.Book.Reviews.Count,
                 }))
                 .ForMember(d => d.Rating, opt => opt.NullSubstitute(new Rating
                 {

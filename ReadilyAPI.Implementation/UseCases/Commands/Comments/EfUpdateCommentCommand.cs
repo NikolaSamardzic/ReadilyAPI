@@ -6,46 +6,41 @@ using ReadilyAPI.Application.Exceptions;
 using ReadilyAPI.Application.UseCases.Commands.Comments;
 using ReadilyAPI.Application.UseCases.DTO.Comments;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.Comment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
 {
-    public class EfUpdateCommentCommand : EfUseCase, IUpdateCommentCommand
+    public class EfUpdateCommentCommand : EfUpdateUseCase<UpdateCommentDto, Comment>, IUpdateCommentCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly UpdateCommentValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfUpdateCommentCommand(ReadilyContext context, IApplicationActor actor, UpdateCommentValidator validator, IMapper mapper) : base(context)
+        public EfUpdateCommentCommand(ReadilyContext context, IApplicationActor actor, UpdateCommentValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfUpdateCommentCommand() { }
 
-        public int Id => 54;
+        public override int Id => 54;
 
-        public string Name => "Update Comment";
+        public override string Name => "Update Comment";
 
-        public void Execute(UpdateCommentDto data)
+        protected override IQueryable<Comment> IncludeRelatedEntities(IQueryable<Comment> query)
         {
-            _validator.ValidateAndThrow(data);
+            return query.Include(x => x.Images);
+        }
 
-            data.UserId = _actor.Id;
-
-            var comment = Context
-                                .Comments
-                                .Include(x => x.Images)
-                                .First(x => x.Id == data.Id);
-
-            if(comment.UserId != _actor.Id) {
+        protected override void BeforeUpdate(UpdateCommentDto data, Comment comment)
+        {
+            if (comment.UserId != _actor.Id)
+            {
                 throw new ConflictException("Comment is not created by this user.");
             }
 
@@ -58,10 +53,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Comments
                     System.IO.File.Move(tempFile, destinationFile);
                 }
             }
-
-            _mapper.Map(data, comment);
-
-            Context.SaveChanges();
         }
     }
 }

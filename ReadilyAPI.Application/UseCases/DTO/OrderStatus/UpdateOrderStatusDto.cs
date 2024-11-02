@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ReadilyAPI.Application.UseCases.DTO.OrderStatus
 {
-    public class UpdateOrderStatusDto
+    public class UpdateOrderStatusDto : UpdateDto
     {
-        public int Id {  get; set; }
         public string Name { get; set; }
     }
 }

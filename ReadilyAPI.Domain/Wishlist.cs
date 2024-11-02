@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Domain
 {
-    public class Wishlist
+    public class Wishlist : Entity
     {
         #region Properites
         public int BookId { get; set; }

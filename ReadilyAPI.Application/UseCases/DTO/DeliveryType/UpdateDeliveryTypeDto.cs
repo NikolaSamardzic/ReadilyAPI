@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ReadilyAPI.Application.UseCases.DTO.DeliveryType
 {
-    public class UpdateDeliveryTypeDto
+    public class UpdateDeliveryTypeDto : UpdateDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

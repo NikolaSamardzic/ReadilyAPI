@@ -35,21 +35,20 @@ namespace ReadilyAPI.Implementation.UseCases.Queries
 
         public PagedResponse<WishlistDto> Execute(WishlistSearch search)
         {
-            var wishlist = Context.Wishlists.Where(x => x.UserId == _actor.Id).ToList();
-
-            return Context
-                .Books
-                .Include(x => x.Image)
-                .Include(x => x.Author)
-                .Include(x => x.Reviews)
-                .Where(x => x.IsActive && wishlist.Select(w => w.BookId).Contains(x.Id))
+            return Context.Wishlists
+                .Include(x => x.Book)
+                .Include(x => x.Book.Author)
+                .Include(x => x.Book.Reviews)
+                .Include(x => x.Book.Categories)
+                .Include(x => x.Book.Image)
+                .Where(x => x.UserId == _actor.Id && x.Book.IsActive)
                 .WhereIf(!string.IsNullOrEmpty(search.Keyword),
                 x =>
-                x.Title.Contains(search.Keyword) || (x.Author.FirstName + x.Author.LastName).Contains(search.Keyword))
-                .WhereIf(search.MinPrice.HasValue, x => x.Price > search.MinPrice)
-                .WhereIf(search.MaxPrice.HasValue, x => x.Price < search.MaxPrice)
-                .WhereIf(search.CategoryIds.Any(), x => x.Categories.Any(c => search.CategoryIds.Contains(c.Id)))
-                .AsPagedReponse<Book, WishlistDto>(search, _mapper);
+                x.Book.Title.Contains(search.Keyword) || (x.Book.Author.FirstName + x.Book.Author.LastName).Contains(search.Keyword))
+                .WhereIf(search.MinPrice.HasValue, x => x.Book.Price > search.MinPrice)
+                .WhereIf(search.MaxPrice.HasValue, x => x.Book.Price < search.MaxPrice)
+                .WhereIf(search.CategoryIds.Any(), x => x.Book.Categories.Any(c => search.CategoryIds.Contains(c.Id)))
+                .AsPagedReponse<Wishlist, WishlistDto>(search, _mapper);
         }
     }
 }

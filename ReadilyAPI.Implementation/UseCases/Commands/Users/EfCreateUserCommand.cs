@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 {
-    public class EfCreateUserCommand : EfCreateUseCase<CreateUserDto, User>, ICreateUserCommand
+    public class EfCreateUserCommand : EfCreateUseCase<CreateUserDto, Domain.User>, ICreateUserCommand
     {
         private readonly IEmailService _emailService;
 
@@ -45,7 +45,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                 System.IO.File.Move(tempFile, destinationFile);
             }
 
-            _emailService.SendEmailAsync(data.Email, "Activate Account", $"http://localhost:5001/users/{user.Token}/verify");
+            data.Token = TokenGenerator.GenerateRandomToken(30);
+
+            _emailService.SendEmailAsync(data.Email, "Activate Account", $"http://localhost:5001/users/{data.Token}/verify");
         }
     }
 }

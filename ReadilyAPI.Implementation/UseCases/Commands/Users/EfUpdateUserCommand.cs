@@ -5,6 +5,7 @@ using ReadilyAPI.Application;
 using ReadilyAPI.Application.UseCases.Commands.Users;
 using ReadilyAPI.Application.UseCases.DTO.User;
 using ReadilyAPI.DataAccess;
+using ReadilyAPI.Domain;
 using ReadilyAPI.Implementation.Validators.User;
 using SixLabors.ImageSharp;
 using System;
@@ -15,39 +16,33 @@ using System.Threading.Tasks;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Users
 {
-    public class EfUpdateUserCommand : EfUseCase, IUpdateUserCommand
+    public class EfUpdateUserCommand : EfUpdateUseCase<UpdateUserDto, Domain.User>, IUpdateUserCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly UpdateUserValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfUpdateUserCommand(ReadilyContext context, IApplicationActor actor, UpdateUserValidator userValidator, IMapper mapper) : base(context)
+        public EfUpdateUserCommand(ReadilyContext context, IApplicationActor actor, UpdateUserValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = userValidator;
-            _mapper = mapper;
         }
 
         private EfUpdateUserCommand() { }
 
-        public int Id => 37;
+        public override int Id => 37;
 
-        public string Name => "Update User";
+        public override string Name => "Update User";
 
-        public void Execute(UpdateUserDto data)
+        protected override IQueryable<User> IncludeRelatedEntities(IQueryable<User> query)
         {
-            _validator.ValidateAndThrow(data);
+            return query
+                .Include(x => x.Role)
+                .Include(x => x.Avatar)
+                .Include(x => x.Biography)
+                .Include(x => x.Address);
+        }
 
-            var user = Context.Users
-                .Include(x=>x.Role)
-                .Include(x=>x.Avatar)
-                .Include(x=>x.Biography)
-                .Include(x=>x.Address)
-                .First(x=> x.Id == _actor.Id);
-
+        protected override void BeforeUpdate(UpdateUserDto data, Domain.User user)
+        {
             var oldImage = Path.Combine("wwwroot", "images", "avatars", user.Avatar.Src);
-
-            _mapper.Map(data, user);
 
             if (data.Avatar != null && user.Avatar != null)
             {
@@ -56,7 +51,7 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
                 System.IO.File.Move(tempFile, destinationFile);
                 System.IO.File.Delete(oldImage);
             }
-            else if(data.Avatar != null)
+            else if (data.Avatar != null)
             {
                 var tempFile = Path.Combine("wwwroot", "temp", data.Avatar);
                 var destinationFile = Path.Combine("wwwroot", "images", "avatars", data.Avatar);
@@ -66,8 +61,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Users
             {
                 user.Avatar = Context.Images.First(x => x.Src.Contains("default"));
             }
-
-            Context.SaveChanges();
         }
     }
 }

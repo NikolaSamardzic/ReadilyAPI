@@ -30,8 +30,7 @@ namespace ReadilyAPI.Implementation.Profiles
                     Src = x.Avatar,
                     Alt = "User avatar"
                 } : null))
-                .ForMember(d => d.Password, s => s.MapFrom(x => BCrypt.Net.BCrypt.HashPassword(x.Password)))
-                .ForMember(d => d.Token, s => s.MapFrom(x => TokenGenerator.GenerateRandomToken(30)));
+                .ForMember(d => d.Password, s => s.MapFrom(x => BCrypt.Net.BCrypt.HashPassword(x.Password)));
 
             CreateMap<UpdateAddressDto, Address>();
 

@@ -35,7 +35,9 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
         {
             data.UserId = _actor.Id;
 
-            if (Context.Users.Include(x => x.Wishlist).First(x => x.Id == _actor.Id).Wishlist.Any(x => x.Id == data.BookId))
+            var userWishlist = Context.Users.Include(x => x.Wishlist).FirstOrDefault(x => x.Id == _actor.Id);
+            
+            if (userWishlist != null && userWishlist.Wishlist.Any(x => x.Id == data.BookId))
             {
                 throw new ConflictException("Book already in a wishlist.");
             }

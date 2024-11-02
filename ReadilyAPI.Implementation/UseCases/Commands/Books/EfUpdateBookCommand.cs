@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using ReadilyAPI.Application.UseCases.Commands.Books;
 using ReadilyAPI.Application.UseCases.DTO.Books;
 using ReadilyAPI.DataAccess;
-using ReadilyAPI.DataAccess.Migrations;
 using ReadilyAPI.Implementation.Validators.Books;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -13,44 +12,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 {
-    public class EfUpdateBookCommand : EfUseCase, IUpdateBookCommand
+    public class EfUpdateBookCommand : EfUpdateUseCase<UpdateBookDto, Domain.Book>, IUpdateBookCommand
     {
-        private readonly UpdateBookValidator _validator;
-        private readonly IMapper _mapper;
-
-        public EfUpdateBookCommand(ReadilyContext context, UpdateBookValidator validator, IMapper mapper) : base(context)
+        public EfUpdateBookCommand(ReadilyContext context, UpdateBookValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfUpdateBookCommand() { }
 
-        public int Id => 46;
+        public override int Id => 46;
 
-        public string Name => "Update Book Use Case";
+        public override string Name => "Update Book Use Case";
 
-        public void Execute(UpdateBookDto data)
+        protected override IQueryable<Domain.Book> IncludeRelatedEntities(IQueryable<Domain.Book> query)
         {
-            _validator.ValidateAndThrow(data);
+            return query
+                .Include(x => x.Prices)
+                .Include(x =>x.BookCategories);
+        }
 
-            var book = Context.Books.Include(x => x.Prices).Single(x => x.Id == data.Id);
+        protected override void BeforeUpdate(UpdateBookDto data, Domain.Book book)
+        {
+            var y = data.CategoryIds.Count();
+            var x = Context.Categories.Where(
+                    c => c.IsActive &&
+                    c.ParentId != null &&
+                    data.CategoryIds.Contains(c.Id))
+                .Count();
 
-            _mapper.Map(data, book);
-
-            var latestPrice = book.Prices.OrderByDescending(p => p.CreatedAt).First().Value;
-
-            if (latestPrice != data.Price)
+            if (book.Price != data.Price)
             {
-                book.Prices.Add(new Domain.Price
-                {
-                    Value = data.Price,
-                    BookId = data.Id,
-                });
-
                 var orders = Context.Orders
                     .Include(x => x.BookOrders)
                     .Where(x => x.FinishedAt == null && x.BookOrders.Any(bo => bo.BookId == book.Id))
@@ -64,12 +59,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 
             if (!string.IsNullOrEmpty(data.Image))
             {
-                book.Image = new Domain.Image
-                {
-                    Src = data.Image,
-                    Alt = "Book Image"
-                };
-
                 var tempFile = Path.Combine("wwwroot", "temp", data.Image);
                 var smallerFile = Path.Combine("wwwroot", "images", "books", "small", data.Image);
                 var biggerFile = Path.Combine("wwwroot", "images", "books", "large", data.Image);
@@ -85,8 +74,6 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Books
 
                 System.IO.File.Delete(tempFile);
             }
-
-            Context.SaveChanges();
         }
 
         private Image ResizeImage(Image originalImage, int height)

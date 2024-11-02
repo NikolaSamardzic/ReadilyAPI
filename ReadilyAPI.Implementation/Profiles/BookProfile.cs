@@ -35,12 +35,24 @@ namespace ReadilyAPI.Implementation.Profiles
                     x => string.IsNullOrEmpty(x.Image)
                                             ? null
                                             : new Image { Src = x.Image, Alt = "Book Image" }))
+                .ForMember(d => d.Image, s => s.Condition(x => !string.IsNullOrEmpty(x.Image)))
                 .ForMember(d => d.BookCategories, 
                 s => 
                 s.MapFrom(x => x.CategoryIds.Select(cId => new BookCategory
                 {
                     CategoryId = cId,
-                })));
+                }))).ForMember(d => d.Price, s => s.Condition((src, dest) => src.Price != dest.Price))
+                .AfterMap((src, dest) =>
+                {
+                    if (src.Price != dest.Price)
+                    {
+                        dest.Prices.Add(new Price
+                        {
+                            Value = src.Price,
+                            BookId = dest.Id,
+                        });
+                    }
+                });
 
             CreateMap<Book, BookDto>()
                 .ForMember(d => d.Image, s => s.MapFrom(x => x.Image.Src))

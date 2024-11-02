@@ -36,10 +36,12 @@ namespace ReadilyAPI.API.Controllers
             return NoContent();
         }
 
-        // POST api/<ShopController>/submit
-        [HttpPost("submit")]
-        public IActionResult Submit([FromBody] SubmitOrderDto dto, ISumbitOrderCommand command)
+        // PUT api/<ShopController>/submit/5
+        [HttpPut("submit/{id}")]
+        public IActionResult Submit(int id, [FromBody] SubmitOrderDto dto, ISumbitOrderCommand command)
         {
+            dto.Id = id;
+
             _commandHandler.HandleCommand(command, dto);
 
             return NoContent();

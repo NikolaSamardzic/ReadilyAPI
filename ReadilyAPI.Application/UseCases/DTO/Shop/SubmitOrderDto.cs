@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReadilyAPI.Application.UseCases.DTO.Shop
 {
-    public class SubmitOrderDto
+    public class SubmitOrderDto : UpdateDto
     {
         public int DeliveryTypeId { get; set; }
         public string AddressName { get; set; }

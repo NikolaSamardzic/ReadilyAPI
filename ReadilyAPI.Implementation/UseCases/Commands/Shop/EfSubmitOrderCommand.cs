@@ -12,44 +12,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Shop
 {
-    public class EfSubmitOrderCommand : EfUseCase, ISumbitOrderCommand
+    public class EfSubmitOrderCommand : EfUpdateUseCase<SubmitOrderDto, Order>, ISumbitOrderCommand
     {
         private readonly IApplicationActor _actor;
-        private readonly SubmitOrderValidator _validator;
-        private readonly IMapper _mapper;
 
-        public EfSubmitOrderCommand(ReadilyContext context, IApplicationActor actor, SubmitOrderValidator validator, IMapper mapper) : base(context)
+        public EfSubmitOrderCommand(ReadilyContext context, IApplicationActor actor, SubmitOrderValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
             _actor = actor;
-            _validator = validator;
-            _mapper = mapper;
         }
 
         private EfSubmitOrderCommand() { }
 
-        public int Id => 66;
+        public override int Id => 66;
 
-        public string Name => "Submit Order";
+        public override string Name => "Submit Order";
 
-        public void Execute(SubmitOrderDto data)
+        protected override IQueryable<Order> IncludeRelatedEntities(IQueryable<Order> query)
         {
-            _validator.ValidateAndThrow(data);
+            return query.Where(x => x.UserId == _actor.Id && x.FinishedAt == null);
+        }
 
-            var order = Context.Orders.FirstOrDefault(x => x.UserId == _actor.Id && x.FinishedAt == null);
-
-            if(order == null)
-            {
-                throw new ConflictException("There is no active order.");
-            }
-
-            data.StatusId = Context.OrderStatuses.First(x => x.Name == "Processing").Id;
-
-            _mapper.Map(data, order);
-
-            Context.SaveChanges();
+        protected override void BeforeUpdate(SubmitOrderDto dto, Order entity)
+        {
+            entity.StatusId = Context.OrderStatuses.First(x => x.Name == "Processing").Id;
         }
     }
 }

@@ -15,11 +15,8 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
 {
     public class EfDeleteWishlistCommand : EfDeleteUseCase<Domain.Wishlist>, IDeleteWishlistCommand
     {
-        private readonly IApplicationActor _actor;
-
         public EfDeleteWishlistCommand(ReadilyContext context, IApplicationActor actor) : base(context)
         {
-            _actor = actor;
         }
 
         private EfDeleteWishlistCommand() { }
@@ -29,10 +26,5 @@ namespace ReadilyAPI.Implementation.UseCases.Commands.Wishlist
         public override string Name => "Delete Wishlist";
 
         protected override bool IsHardDelete() => true;
-
-        protected override IQueryable<Domain.Wishlist> IncludeRelatedEntities(IQueryable<Domain.Wishlist> query)
-        {
-            return query.Where(x => x.UserId == _actor.Id);
-        }
     }
 }

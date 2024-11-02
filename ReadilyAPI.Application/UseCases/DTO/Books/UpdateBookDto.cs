@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ReadilyAPI.Application.UseCases.DTO.Books
 {
-    public class UpdateBookDto
+    public class UpdateBookDto : UpdateDto
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public int PageCount { get; set; }
         public decimal Price { get; set; }

@@ -16,41 +16,21 @@ using AutoMapper;
 
 namespace ReadilyAPI.Implementation.UseCases.Commands.Roles
 {
-    public class EfUpdateRoleCommand : EfUseCase, IUpdateRoleCommand
+    public class EfUpdateRoleCommand : EfUpdateUseCase<UpdateRoleDto, Role>, IUpdateRoleCommand
     {
-        private readonly UpdateRoleValidator _validator;
-        private readonly IMapper _mapper;
-
-        public EfUpdateRoleCommand(ReadilyContext context, UpdateRoleValidator validator, IMapper mapper) : base(context)
+        public EfUpdateRoleCommand(ReadilyContext context, UpdateRoleValidator validator, IMapper mapper) : base(context, mapper, validator)
         {
-            _validator = validator;
-            this._mapper = mapper;
         }
 
         private EfUpdateRoleCommand() { }
 
-        public int Id => 8;
+        public override int Id => 8;
 
-        public string Name => "Update Role";
+        public override string Name => "Update Role";
 
-        public void Execute(UpdateRoleDto data)
+        protected override IQueryable<Role> IncludeRelatedEntities(IQueryable<Role> query)
         {
-            _validator.ValidateAndThrow(data);
-
-            var role = Context.Roles
-                .Include(x=>x.RoleUseCases)
-                .FirstOrDefault(x=>x.Id == data.Id && x.IsActive);
-
-            if (role == null)
-            {
-                throw new EntityNotFoundException(data.Id.GetValueOrDefault(), nameof(Domain.Role));
-            }
-
-            _mapper.Map(data, role);
-
-            Context.Roles.Update(role);
-
-            Context.SaveChanges();
+            return query.Include(x => x.RoleUseCases).Where(x => x.IsActive);
         }
     }
 }
